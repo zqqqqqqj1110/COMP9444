@@ -1,0 +1,31 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "stage02_10m_seed7",
+  "created_at": "2026-07-13T11:07:31",
+  "paths": {
+    "root_dir": "experiments\\airsimnh\\ppo\\stage02_10m_seed7",
+    "results_dir": "experiments\\airsimnh\\ppo\\stage02_10m_seed7\\results",
+    "models_dir": "experiments\\airsimnh\\ppo\\stage02_10m_seed7\\models"
+  },
+  "script": "train_ppo.py",
+  "target_position": [
+    10.0,
+    0.0,
+    -3.0
+  ],
+  "start_position": [
+    0.0,
+    0.0,
+    -3.0
+  ],
+  "episodes": 200,
+  "max_steps": 150,
+  "rollout_steps": 512,
+  "batch_size": 64,
+  "update_epochs": 4,
+  "learning_rate": 0.0001,
+  "seed": 7,
+  "resume_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\stage01_5m_seed7\\models\\ppo_final.pt",
+  "resume_optimizer": true
+}

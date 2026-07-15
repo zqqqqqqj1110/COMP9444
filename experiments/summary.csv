@@ -1,0 +1,2 @@
+scenario,algorithm,episodes,success_rate,collision_rate,average_reward,average_steps,average_final_distance,evaluation_log
+blocks,dqn,20,1.0,0.0,112.42049407958984,10.0,1.5400787591934204,experiments\blocks\dqn\results\evaluation_log.csv

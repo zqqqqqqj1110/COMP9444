@@ -1,0 +1,11 @@
+airsim>=1.8.1
+gymnasium>=0.29.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+torch>=2.1.0
+matplotlib>=3.8.0
+tqdm>=4.66.0
+# AirSim depends on msgpack-rpc-python, which is not compatible with Tornado 5+.
+tornado==4.5.3
+ipykernel==5.5.6
+jupyter-client==7.1.2

@@ -1,0 +1,7 @@
+{
+  "scenario": "blocks",
+  "algorithm": "dqn",
+  "script": "train_dqn.py",
+  "note": "Existing top-level DQN outputs were migrated into the multi-scenario experiment layout.",
+  "target_position": [20.0, 0.0, -3.0]
+}
