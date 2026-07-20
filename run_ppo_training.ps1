@@ -1,20 +1,20 @@
 # Edit only this configuration section for a new PPO experiment.
 $Scenario = "AirSimNH"
 $SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
-$RunName = "stage02_10m_seed7"
-$ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\stage01_5m_seed7\models\ppo_final.pt"
+$RunName = "stage03_diagonal_10x5m_seed7"
+$ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\stage02_10m_seed7\models\ppo_final.pt"
 
-$Episodes = 200
-$MaxSteps = 150
+$Episodes = 250
+$MaxSteps = 200
 $RolloutSteps = 512
 $TargetX = 10.0
-$TargetY = 0.0
+$TargetY = 5.0
 $TargetZ = -3.0
 $StartX = 0.0
 $StartY = 0.0
 $StartZ = -3.0
 
-$LearningRate = 1e-4
+$LearningRate = 7.5e-5
 $BatchSize = 64
 $UpdateEpochs = 4
 $CheckpointEvery = 10
@@ -27,6 +27,7 @@ $SmokeTestSteps = 3
 
 $PythonExe = "C:\Users\User\miniconda3\envs\airsim-rl\python.exe"
 $AutoStartScene = $true
+$CloseSceneAfterRun = $true
 $AirSimHost = "127.0.0.1"
 $AirSimPort = 41451
 $ConnectionTimeoutSeconds = 180
@@ -68,6 +69,48 @@ function ConvertTo-ExperimentSlug {
         throw "Scenario and RunName must contain at least one letter or number."
     }
     return $slug
+}
+
+function Stop-ConfiguredAirSimScene {
+    param([string]$ExecutablePath)
+
+    $sceneDirectory = (Resolve-Path -LiteralPath (Split-Path -Parent $ExecutablePath)).Path
+    $sceneStem = [System.IO.Path]::GetFileNameWithoutExtension($ExecutablePath)
+    $processIds = @()
+
+    try {
+        $processIds = @(
+            Get-CimInstance Win32_Process -ErrorAction Stop |
+                Where-Object {
+                    $_.ExecutablePath -and
+                    [System.IO.Path]::GetFullPath($_.ExecutablePath).StartsWith(
+                        $sceneDirectory,
+                        [System.StringComparison]::OrdinalIgnoreCase
+                    )
+                } |
+                Select-Object -ExpandProperty ProcessId
+        )
+    }
+    catch {
+        Write-Warning "Could not inspect scene process paths: $($_.Exception.Message)"
+    }
+
+    if ($processIds.Count -eq 0) {
+        $processIds = @(
+            Get-Process -Name "$sceneStem*" -ErrorAction SilentlyContinue |
+                Select-Object -ExpandProperty Id
+        )
+    }
+
+    if ($processIds.Count -eq 0) {
+        Write-Warning "No running process was found for the configured scene."
+        return
+    }
+
+    foreach ($processId in ($processIds | Sort-Object -Unique)) {
+        Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
+    }
+    Write-Host "Closed AirSim scene: $sceneStem"
 }
 
 if ([string]::IsNullOrWhiteSpace($Scenario)) {
@@ -125,6 +168,7 @@ else {
     Write-Warning "AirSim is already running. Confirm that the open scene matches '$Scenario'."
 }
 
+try {
 Write-Host "Waiting for AirSim at ${AirSimHost}:${AirSimPort}..."
 $deadline = [DateTime]::UtcNow.AddSeconds($ConnectionTimeoutSeconds)
 while (-not (Test-AirSimPort -HostName $AirSimHost -Port $AirSimPort)) {
@@ -150,6 +194,7 @@ Write-Host "  Episodes:       $Episodes"
 Write-Host "  Max steps:      $MaxSteps"
 Write-Host "  Rollout steps:  $RolloutSteps"
 Write-Host "  Learning rate:  $LearningRate"
+Write-Host "  Close scene:    $CloseSceneAfterRun"
 Write-Host "  Output:         $runRoot"
 Write-Host ""
 
@@ -229,3 +274,9 @@ if ($EvaluateAfterTraining) {
 
 Write-Host ""
 Write-Host "Training complete. Results: $runRoot"
+}
+finally {
+    if ($CloseSceneAfterRun) {
+        Stop-ConfiguredAirSimScene -ExecutablePath $SceneExe
+    }
+}
