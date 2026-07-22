@@ -1,0 +1,13 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "dqn",
+  "run_name": "scratch_33m_45k_seed7",
+  "status": "completed",
+  "started_at": "2026-07-21T12:29:34",
+  "completed_at": "2026-07-21T20:34:21",
+  "elapsed_seconds": 29087.814,
+  "elapsed_hours": 8.079948,
+  "completed_episodes": 722,
+  "new_environment_interactions": 45000,
+  "requested_total_steps": 45000
+}

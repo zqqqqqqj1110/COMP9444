@@ -39,6 +39,8 @@ def plot_training_curves(csv_path: str | Path, output_path: str | Path):
     reward = _read_column(rows, "reward")
     success = _read_column(rows, "success")
     collision = _read_column(rows, "collision")
+    altitude = _read_column(rows, "out_of_altitude")
+    timeout = _read_column(rows, "timeout")
     final_distance = _read_column(rows, "final_distance")
     epsilon = _read_column(rows, "epsilon")
 
@@ -61,11 +63,18 @@ def plot_training_curves(csv_path: str | Path, output_path: str | Path):
     axes[1].set_ylim(-0.05, 1.05)
 
     ma_collision = moving_average(collision)
-    axes[2].plot(episodes[-len(ma_collision) :], ma_collision)
-    axes[2].set_title("Collision Rate (Moving Average)")
+    axes[2].plot(episodes[-len(ma_collision) :], ma_collision, label="collision")
+    if not np.isnan(altitude).all():
+        ma_altitude = moving_average(altitude)
+        axes[2].plot(episodes[-len(ma_altitude) :], ma_altitude, label="altitude")
+    if not np.isnan(timeout).all():
+        ma_timeout = moving_average(timeout)
+        axes[2].plot(episodes[-len(ma_timeout) :], ma_timeout, label="timeout")
+    axes[2].set_title("Failure Rates (Moving Average)")
     axes[2].set_xlabel("Episode")
-    axes[2].set_ylabel("Collision")
+    axes[2].set_ylabel("Rate")
     axes[2].set_ylim(-0.05, 1.05)
+    axes[2].legend()
 
     axes[3].plot(episodes, final_distance, label="final distance")
     if not np.isnan(epsilon).all():

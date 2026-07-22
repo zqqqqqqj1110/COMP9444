@@ -1,0 +1,6 @@
+"scenario","seed","algorithm","method","stage","run_name","status","started_at","completed_at","elapsed_seconds","elapsed_hours"
+"airsimnh","7","dqn","scratch","final_33m","scratch_33m_45k_seed7","completed","2026-07-21T12:29:32.4239162+08:00","2026-07-21T20:34:31.0100072+08:00","29098.585","8.08294"
+"airsimnh","7","ppo","scratch","final_33m","scratch_33m_45k_seed7","completed","2026-07-21T21:14:41.3307540+08:00","2026-07-22T04:38:31.9598076+08:00","26630.629","7.397397"
+"airsimnh","7","ppo","curriculum","stage01_10m","curriculum_stage01_10m_5k_seed7","completed","2026-07-22T05:03:51.5077594+08:00","2026-07-22T05:56:26.5737799+08:00","3155.066","0.876407"
+"airsimnh","7","ppo","curriculum","stage02_23m","curriculum_stage02_23m_10k_seed7","completed","2026-07-22T05:56:26.6047446+08:00","2026-07-22T07:39:03.2916945+08:00","6156.687","1.710191"
+"airsimnh","7","ppo","curriculum","stage03_33m","curriculum_stage03_33m_30k_seed7","completed","2026-07-22T07:39:03.3308757+08:00","2026-07-22T12:36:16.8596538+08:00","17833.529","4.953758"

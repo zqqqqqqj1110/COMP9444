@@ -77,14 +77,21 @@ def main():
             obs, _ = env.reset()
             total_reward = 0.0
             info = {}
+            action_counts = np.zeros(agent.config.action_dim, dtype=np.int64)
+            terminated = False
+            truncated = False
 
             for _ in range(args.max_steps):
                 action = agent.select_action(obs, evaluate=True)
+                action_counts[action] += 1
                 obs, reward, terminated, truncated, info = env.step(action)
                 total_reward += reward
                 if terminated or truncated:
                     break
 
+            position = info.get("position", (np.nan, np.nan, np.nan))
+            dominant_action = int(np.argmax(action_counts))
+            observed_steps = max(int(action_counts.sum()), 1)
             rows.append(
                 {
                     "episode": episode,
@@ -93,7 +100,15 @@ def main():
                     "success": int(info.get("success", False)),
                     "collision": int(info.get("collision", False)),
                     "out_of_altitude": int(info.get("out_of_altitude", False)),
+                    "timeout": int(bool(truncated and not terminated)),
                     "final_distance": info.get("distance_to_target", np.nan),
+                    "final_x": position[0],
+                    "final_y": position[1],
+                    "final_z": position[2],
+                    "path_length_m": info.get("path_length_m", np.nan),
+                    "min_depth_m": info.get("episode_min_depth_m", np.nan),
+                    "dominant_action": dominant_action,
+                    "dominant_action_fraction": float(action_counts[dominant_action] / observed_steps),
                 }
             )
     finally:
@@ -107,6 +122,8 @@ def main():
 
     success_rate = np.mean([row["success"] for row in rows])
     collision_rate = np.mean([row["collision"] for row in rows])
+    altitude_rate = np.mean([row["out_of_altitude"] for row in rows])
+    timeout_rate = np.mean([row["timeout"] for row in rows])
     avg_reward = np.mean([row["reward"] for row in rows])
     avg_steps = np.mean([row["steps"] for row in rows])
 
@@ -114,6 +131,8 @@ def main():
     print(f"Model: {model_path}")
     print(f"Success rate: {success_rate:.2%}")
     print(f"Collision rate: {collision_rate:.2%}")
+    print(f"Altitude violation rate: {altitude_rate:.2%}")
+    print(f"Timeout rate: {timeout_rate:.2%}")
     print(f"Average reward: {avg_reward:.2f}")
     print(f"Average steps: {avg_steps:.1f}")
 

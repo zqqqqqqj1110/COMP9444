@@ -30,6 +30,10 @@ class DroneEnvConfig:
     altitude_min_z: float = -10.0
     altitude_max_z: float = -1.0
     altitude_penalty: float = -100.0
+    altitude_hold_penalty_scale: float = 0.25
+    altitude_margin_m: float = 1.5
+    altitude_margin_penalty_scale: float = 1.0
+    timeout_penalty: float = -25.0
     camera_name: str = "0"
     vehicle_name: str = ""
     seed_sleep_s: float = 0.2
@@ -74,6 +78,9 @@ class AirSimDroneEnv(gym.Env):
         self.previous_distance = 0.0
         self.last_info: dict[str, Any] = {}
         self._collision_baseline_time_stamp = 0.0
+        self._previous_position: tuple[float, float, float] | None = None
+        self.path_length_m = 0.0
+        self.episode_min_depth_m = self.config.max_depth_m
 
     @staticmethod
     def _import_airsim():
@@ -116,6 +123,9 @@ class AirSimDroneEnv(gym.Env):
         time.sleep(self.config.spawn_settle_s)
 
         position = self._position()
+        self._previous_position = (position.x_val, position.y_val, position.z_val)
+        self.path_length_m = 0.0
+        self.episode_min_depth_m = self.config.max_depth_m
         start_error = math.sqrt(
             (position.x_val - start_x) ** 2
             + (position.y_val - start_y) ** 2
@@ -157,9 +167,29 @@ class AirSimDroneEnv(gym.Env):
         )
         distance = self._distance_to_target()
         position = self._position()
+        current_position = (position.x_val, position.y_val, position.z_val)
+        if self._previous_position is not None:
+            self.path_length_m += math.dist(self._previous_position, current_position)
+        self._previous_position = current_position
 
         progress = self.previous_distance - distance
-        reward = self.config.step_penalty + self.config.distance_reward_scale * progress
+        progress_reward = self.config.distance_reward_scale * progress
+        target_z = self.config.target_position[2]
+        altitude_hold_penalty = -self.config.altitude_hold_penalty_scale * abs(position.z_val - target_z)
+        boundary_clearance = min(
+            position.z_val - self.config.altitude_min_z,
+            self.config.altitude_max_z - position.z_val,
+        )
+        altitude_margin_penalty = -self.config.altitude_margin_penalty_scale * max(
+            0.0,
+            self.config.altitude_margin_m - boundary_clearance,
+        )
+        reward = (
+            self.config.step_penalty
+            + progress_reward
+            + altitude_hold_penalty
+            + altitude_margin_penalty
+        )
         self.previous_distance = distance
 
         reached_goal = distance <= self.config.goal_radius_m
@@ -173,6 +203,10 @@ class AirSimDroneEnv(gym.Env):
             reward += self.config.collision_penalty
         if out_of_altitude:
             reward += self.config.altitude_penalty
+        timeout_penalty = 0.0
+        if truncated and not terminated:
+            timeout_penalty = self.config.timeout_penalty
+            reward += timeout_penalty
 
         info = self._get_info()
         info.update(
@@ -183,6 +217,10 @@ class AirSimDroneEnv(gym.Env):
                 "out_of_altitude": out_of_altitude,
                 "distance_to_target": distance,
                 "steps": self.steps,
+                "progress_reward": progress_reward,
+                "altitude_hold_penalty": altitude_hold_penalty,
+                "altitude_margin_penalty": altitude_margin_penalty,
+                "timeout_penalty": timeout_penalty,
             }
         )
         self.last_info = info
@@ -245,6 +283,9 @@ class AirSimDroneEnv(gym.Env):
         depth = np.array(response.image_data_float, dtype=np.float32).reshape(response.height, response.width)
         depth = np.nan_to_num(depth, nan=self.config.max_depth_m, posinf=self.config.max_depth_m, neginf=0.0)
         depth = np.clip(depth, 0.0, self.config.max_depth_m)
+        valid_depth = depth[depth > 0.05]
+        if valid_depth.size:
+            self.episode_min_depth_m = min(self.episode_min_depth_m, float(valid_depth.min()))
         obstacle_intensity = 1.0 - (depth / self.config.max_depth_m)
         resized = cv2.resize(
             obstacle_intensity,
@@ -278,6 +319,8 @@ class AirSimDroneEnv(gym.Env):
             "position": (pos.x_val, pos.y_val, pos.z_val),
             "velocity": (vel.x_val, vel.y_val, vel.z_val),
             "distance_to_target": self._distance_to_target(),
+            "path_length_m": self.path_length_m,
+            "episode_min_depth_m": self.episode_min_depth_m,
         }
 
     def _position(self):

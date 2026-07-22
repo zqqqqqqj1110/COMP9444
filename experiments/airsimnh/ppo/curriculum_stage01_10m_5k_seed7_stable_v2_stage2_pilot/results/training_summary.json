@@ -1,0 +1,24 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "curriculum_stage01_10m_5k_seed7_stable_v2_stage2_pilot",
+  "status": "completed",
+  "started_at": "2026-07-22T18:43:46",
+  "completed_at": "2026-07-22T19:29:52",
+  "elapsed_seconds": 2766.413,
+  "elapsed_hours": 0.768448,
+  "completed_episodes": 90,
+  "new_environment_interactions": 5000,
+  "agent_cumulative_steps": 5000,
+  "requested_total_steps": 5000,
+  "resume_model": null,
+  "resume_optimizer": false,
+  "best_model": "experiments\\airsimnh\\ppo\\curriculum_stage01_10m_5k_seed7_stable_v2_stage2_pilot\\models\\ppo_best.pt",
+  "best_window_metrics": {
+    "success_rate": 0.4,
+    "unsafe_rate": 0.45,
+    "mean_final_distance": 4.956896511055958,
+    "update": 10,
+    "global_step": 5000
+  }
+}

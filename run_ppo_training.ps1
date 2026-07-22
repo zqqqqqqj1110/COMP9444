@@ -3,6 +3,7 @@ $Scenario = "AirSimNH"
 $SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
 $RunName = "stage03_diagonal_10x5m_seed7"
 $ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\stage02_10m_seed7\models\ppo_final.pt"
+$ResumeOptimizer = $false
 
 $Episodes = 250
 $MaxSteps = 200
@@ -17,10 +18,15 @@ $StartZ = -3.0
 $LearningRate = 7.5e-5
 $BatchSize = 64
 $UpdateEpochs = 4
+$RewardScale = 0.1
+$ValueLoss = "huber"
+$BestWindow = 20
+$BestMinEpisodes = 20
 $CheckpointEvery = 10
 $Seed = 7
 
 $EvaluateAfterTraining = $true
+$EvaluateBestModel = $true
 $EvaluationEpisodes = 20
 $RunSmokeTest = $true
 $SmokeTestSteps = 3
@@ -125,6 +131,12 @@ if ($Episodes -le 0 -or $MaxSteps -le 0 -or $RolloutSteps -le 0) {
 if ($BatchSize -le 0 -or $BatchSize -gt $RolloutSteps) {
     throw "BatchSize must be positive and no larger than RolloutSteps."
 }
+if ($RewardScale -le 0 -or $BestWindow -le 0 -or $BestMinEpisodes -le 0 -or $BestMinEpisodes -gt $BestWindow) {
+    throw "Stable PPO reward scale and best-model window settings are invalid."
+}
+if ($ValueLoss -notin @("huber", "mse")) {
+    throw "ValueLoss must be 'huber' or 'mse'."
+}
 if ($EvaluationEpisodes -le 0) {
     throw "EvaluationEpisodes must be positive."
 }
@@ -188,12 +200,14 @@ Write-Host "PPO training configuration"
 Write-Host "  Scenario:       $scenarioSlug"
 Write-Host "  Run:            $runSlug"
 Write-Host "  Resume model:   $resumeModelPath"
+Write-Host "  Resume optimizer: $ResumeOptimizer"
 Write-Host "  Target:         ($TargetX, $TargetY, $TargetZ)"
 Write-Host "  Start:          ($StartX, $StartY, $StartZ)"
 Write-Host "  Episodes:       $Episodes"
 Write-Host "  Max steps:      $MaxSteps"
 Write-Host "  Rollout steps:  $RolloutSteps"
 Write-Host "  Learning rate:  $LearningRate"
+Write-Host "  PPO stabilisation: reward scale=$RewardScale, value loss=$ValueLoss"
 Write-Host "  Close scene:    $CloseSceneAfterRun"
 Write-Host "  Output:         $runRoot"
 Write-Host ""
@@ -234,6 +248,10 @@ $trainingArgs = @(
     "--start-y", $StartY,
     "--start-z", $StartZ,
     "--learning-rate", $LearningRate,
+    "--reward-scale", $RewardScale,
+    "--value-loss", $ValueLoss,
+    "--best-window", $BestWindow,
+    "--best-min-episodes", $BestMinEpisodes,
     "--batch-size", $BatchSize,
     "--update-epochs", $UpdateEpochs,
     "--checkpoint-every", $CheckpointEvery,
@@ -242,6 +260,9 @@ $trainingArgs = @(
 
 if ($null -ne $resumeModelPath) {
     $trainingArgs += @("--resume-model", $resumeModelPath)
+    if ($ResumeOptimizer) {
+        $trainingArgs += "--resume-optimizer"
+    }
 }
 
 & $PythonExe @trainingArgs
@@ -252,11 +273,18 @@ if ($LASTEXITCODE -ne 0) {
 if ($EvaluateAfterTraining) {
     Write-Host ""
     Write-Host "Running $EvaluationEpisodes deterministic evaluation episodes..."
+    $evaluationModel = if ($EvaluateBestModel) {
+        Join-Path $runRoot "models\ppo_best.pt"
+    }
+    else {
+        Join-Path $runRoot "models\ppo_final.pt"
+    }
     $evaluationArgs = @(
         "src\evaluate.py",
         "--algorithm", "ppo",
         "--scenario", $scenarioSlug,
         "--run-name", $runSlug,
+        "--model", $evaluationModel,
         "--episodes", $EvaluationEpisodes,
         "--max-steps", $MaxSteps,
         "--target-x", $TargetX,

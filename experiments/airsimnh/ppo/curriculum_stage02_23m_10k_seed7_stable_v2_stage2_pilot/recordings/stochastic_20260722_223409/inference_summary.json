@@ -1,0 +1,22 @@
+{
+  "created_at": "2026-07-22T14:35:20.052774+00:00",
+  "algorithm": "ppo",
+  "policy_mode": "stochastic",
+  "model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot\\models\\ppo_best.pt",
+  "seed": 7,
+  "start": [
+    85.413,
+    -15.334,
+    -3.0
+  ],
+  "target": [
+    107.635,
+    -10.842,
+    -3.0
+  ],
+  "attempted_episodes": 2,
+  "successful_episodes": 1,
+  "success_rate": 0.5,
+  "step_log": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot\\recordings\\stochastic_20260722_223409\\inference_steps.csv",
+  "episode_log": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot\\recordings\\stochastic_20260722_223409\\inference_episodes.csv"
+}

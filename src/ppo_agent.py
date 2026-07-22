@@ -7,6 +7,7 @@ from typing import Any
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torch.distributions import Categorical
 
@@ -26,12 +27,22 @@ class PPOConfig:
     entropy_coef: float = 0.01
     max_grad_norm: float = 0.5
     target_kl: float | None = 0.03
+    reward_scale: float = 0.1
+    value_loss_type: str = "huber"
+    normalize_shared_features: bool = True
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class PPOActorCritic(nn.Module):
-    def __init__(self, image_shape: tuple[int, int, int], state_dim: int, action_dim: int):
+    def __init__(
+        self,
+        image_shape: tuple[int, int, int],
+        state_dim: int,
+        action_dim: int,
+        normalize_shared_features: bool = True,
+    ):
         super().__init__()
+        self.normalize_shared_features = normalize_shared_features
         c, h, w = image_shape
         self.cnn = nn.Sequential(
             nn.Conv2d(c, 32, kernel_size=8, stride=4),
@@ -53,20 +64,56 @@ class PPOActorCritic(nn.Module):
         self.actor = nn.Linear(512, action_dim)
         self.critic = nn.Linear(512, 1)
 
-    def forward(self, image: torch.Tensor, state: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        self._initialize_weights()
+
+    def _initialize_weights(self):
+        for module in self.cnn:
+            if isinstance(module, nn.Conv2d):
+                nn.init.orthogonal_(module.weight, gain=nn.init.calculate_gain("relu"))
+                nn.init.zeros_(module.bias)
+        nn.init.orthogonal_(self.shared[0].weight, gain=nn.init.calculate_gain("tanh"))
+        nn.init.zeros_(self.shared[0].bias)
+        nn.init.orthogonal_(self.actor.weight, gain=0.01)
+        nn.init.zeros_(self.actor.bias)
+        nn.init.orthogonal_(self.critic.weight, gain=1.0)
+        nn.init.zeros_(self.critic.bias)
+
+    def _hidden(self, image: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
         visual_features = self.cnn(image)
         features = torch.cat([visual_features, state], dim=1)
-        hidden = self.shared(features)
+        pre_activation = self.shared[0](features)
+        if self.normalize_shared_features:
+            pre_activation = F.layer_norm(pre_activation, (pre_activation.shape[-1],))
+        return self.shared[1](pre_activation)
+
+    def forward(self, image: torch.Tensor, state: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        hidden = self._hidden(image, state)
         logits = self.actor(hidden)
         value = self.critic(hidden).squeeze(-1)
         return logits, value
+
+    def diagnostics(self, image: torch.Tensor, state: torch.Tensor) -> dict[str, float]:
+        with torch.no_grad():
+            hidden = self._hidden(image, state)
+            logits = self.actor(hidden)
+            probabilities = torch.softmax(logits, dim=1)
+        return {
+            "activation_saturation": float((hidden.abs() > 0.99).float().mean().item()),
+            "activation_abs_mean": float(hidden.abs().mean().item()),
+            "max_action_probability": float(probabilities.max(dim=1).values.mean().item()),
+        }
 
 
 class PPOAgent:
     def __init__(self, config: PPOConfig):
         self.config = config
         self.device = torch.device(config.device)
-        self.network = PPOActorCritic(config.image_shape, config.state_dim, config.action_dim).to(self.device)
+        self.network = PPOActorCritic(
+            config.image_shape,
+            config.state_dim,
+            config.action_dim,
+            normalize_shared_features=config.normalize_shared_features,
+        ).to(self.device)
         self.optimizer = optim.Adam(self.network.parameters(), lr=config.learning_rate, eps=1e-5)
         self.steps_done = 0
 
@@ -116,6 +163,7 @@ class PPOAgent:
         actions = torch.as_tensor([item["action"] for item in rollout], dtype=torch.long, device=self.device)
         old_log_probs = torch.as_tensor([item["log_prob"] for item in rollout], dtype=torch.float32, device=self.device)
         rewards = torch.as_tensor([item["reward"] for item in rollout], dtype=torch.float32, device=self.device)
+        rewards = rewards * cfg.reward_scale
         dones = torch.as_tensor([item["done"] for item in rollout], dtype=torch.float32, device=self.device)
         values = torch.as_tensor([item["value"] for item in rollout], dtype=torch.float32, device=self.device)
 
@@ -141,6 +189,10 @@ class PPOAgent:
             "value_loss": 0.0,
             "entropy": 0.0,
             "approx_kl": 0.0,
+            "explained_variance": 0.0,
+            "activation_saturation": 0.0,
+            "activation_abs_mean": 0.0,
+            "max_action_probability": 0.0,
             "updates": 0.0,
         }
 
@@ -166,7 +218,12 @@ class PPOAgent:
                     1.0 + cfg.clip_coef,
                 )
                 policy_loss = torch.max(policy_loss_1, policy_loss_2).mean()
-                value_loss = 0.5 * (returns[batch_idx] - new_values).pow(2).mean()
+                if cfg.value_loss_type == "huber":
+                    value_loss = F.smooth_l1_loss(new_values, returns[batch_idx])
+                elif cfg.value_loss_type == "mse":
+                    value_loss = 0.5 * (returns[batch_idx] - new_values).pow(2).mean()
+                else:
+                    raise ValueError(f"Unsupported PPO value loss: {cfg.value_loss_type}")
                 loss = policy_loss + cfg.value_coef * value_loss - cfg.entropy_coef * entropy
 
                 self.optimizer.zero_grad()
@@ -188,6 +245,16 @@ class PPOAgent:
         if stats["updates"] > 0:
             for key in ("policy_loss", "value_loss", "entropy", "approx_kl"):
                 stats[key] /= stats["updates"]
+
+        with torch.no_grad():
+            _, predicted_values = self.network(images, states)
+            return_variance = torch.var(returns, unbiased=False)
+            if return_variance > 1e-8:
+                residual_variance = torch.var(returns - predicted_values, unbiased=False)
+                stats["explained_variance"] = float((1.0 - residual_variance / return_variance).item())
+            else:
+                stats["explained_variance"] = 0.0
+        stats.update(self.network.diagnostics(images, states))
         return stats
 
     def save(self, path: str | Path):
@@ -207,8 +274,18 @@ class PPOAgent:
         checkpoint = torch.load(path, map_location=self.device)
         self.network.load_state_dict(checkpoint["model_state_dict"])
         self.steps_done = int(checkpoint.get("steps_done", 0))
+        saved_config = checkpoint.get("config", {})
+        normalize_shared_features = bool(saved_config.get("normalize_shared_features", False))
+        self.config.normalize_shared_features = normalize_shared_features
+        self.network.normalize_shared_features = normalize_shared_features
         if load_optimizer and "optimizer_state_dict" in checkpoint:
             self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+
+    @staticmethod
+    def checkpoint_uses_stable_features(path: str | Path) -> bool:
+        checkpoint = torch.load(Path(path), map_location="cpu")
+        saved_config = checkpoint.get("config", {})
+        return bool(saved_config.get("normalize_shared_features", False))
 
     def _obs_to_tensors(self, observation: dict[str, np.ndarray]) -> tuple[torch.Tensor, torch.Tensor]:
         image = torch.as_tensor(observation["image"][None, ...], dtype=torch.float32, device=self.device)

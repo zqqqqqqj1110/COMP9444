@@ -1,0 +1,28 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "dqn",
+  "run_name": "scratch_33m_45k_seed7",
+  "created_at": "2026-07-21T12:29:34",
+  "paths": {
+    "root_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7",
+    "results_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7\\results",
+    "models_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7\\models"
+  },
+  "script": "train_dqn.py",
+  "target_position": [
+    117.756,
+    -19.034,
+    -3.0
+  ],
+  "start_position": [
+    85.413,
+    -15.334,
+    -3.0
+  ],
+  "episodes": 200,
+  "total_steps": 45000,
+  "stop_condition": "total_steps",
+  "max_steps": 150,
+  "checkpoint_every_steps": 5000,
+  "seed": 7
+}

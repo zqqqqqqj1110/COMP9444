@@ -1,0 +1,24 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot",
+  "status": "completed",
+  "started_at": "2026-07-22T19:33:16",
+  "completed_at": "2026-07-22T21:03:31",
+  "elapsed_seconds": 5414.662,
+  "elapsed_hours": 1.504073,
+  "completed_episodes": 142,
+  "new_environment_interactions": 10000,
+  "agent_cumulative_steps": 15000,
+  "requested_total_steps": 10000,
+  "resume_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage01_10m_5k_seed7_stable_v2_stage2_pilot\\models\\ppo_best.pt",
+  "resume_optimizer": false,
+  "best_model": "experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot\\models\\ppo_best.pt",
+  "best_window_metrics": {
+    "success_rate": 0.85,
+    "unsafe_rate": 0.05,
+    "mean_final_distance": 3.344408725265475,
+    "update": 20,
+    "global_step": 15000
+  }
+}

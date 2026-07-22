@@ -1,0 +1,39 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "dqn",
+  "run_name": "scratch_33m_45k_seed7_stable_v2",
+  "created_at": "2026-07-22T15:59:20",
+  "paths": {
+    "root_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v2",
+    "results_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v2\\results",
+    "models_dir": "experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v2\\models"
+  },
+  "script": "train_dqn.py",
+  "target_position": [
+    117.756,
+    -19.034,
+    -3.0
+  ],
+  "start_position": [
+    85.413,
+    -15.334,
+    -3.0
+  ],
+  "episodes": 200,
+  "total_steps": 45000,
+  "stop_condition": "total_steps",
+  "max_steps": 150,
+  "checkpoint_every_steps": 5000,
+  "seed": 7,
+  "reward_config": {
+    "step_penalty": -0.05,
+    "distance_reward_scale": 2.0,
+    "goal_reward": 100.0,
+    "collision_penalty": -100.0,
+    "altitude_penalty": -100.0,
+    "altitude_hold_penalty_scale": 0.25,
+    "altitude_margin_m": 1.5,
+    "altitude_margin_penalty_scale": 1.0,
+    "timeout_penalty": -25.0
+  }
+}

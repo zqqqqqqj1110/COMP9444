@@ -29,15 +29,25 @@ def numeric(rows: list[dict[str, str]], key: str) -> np.ndarray:
     return np.asarray(values, dtype=np.float32)
 
 
+def mean_or_nan(rows: list[dict[str, str]], key: str) -> float:
+    values = numeric(rows, key)
+    finite = values[np.isfinite(values)]
+    return float(np.mean(finite)) if finite.size else float("nan")
+
+
 def summarize_log(log_path: Path) -> dict[str, float | int]:
     rows = read_rows(log_path)
     return {
         "episodes": len(rows),
-        "success_rate": float(np.nanmean(numeric(rows, "success"))),
-        "collision_rate": float(np.nanmean(numeric(rows, "collision"))),
-        "average_reward": float(np.nanmean(numeric(rows, "reward"))),
-        "average_steps": float(np.nanmean(numeric(rows, "steps"))),
-        "average_final_distance": float(np.nanmean(numeric(rows, "final_distance"))),
+        "success_rate": mean_or_nan(rows, "success"),
+        "collision_rate": mean_or_nan(rows, "collision"),
+        "altitude_violation_rate": mean_or_nan(rows, "out_of_altitude"),
+        "timeout_rate": mean_or_nan(rows, "timeout"),
+        "average_reward": mean_or_nan(rows, "reward"),
+        "average_steps": mean_or_nan(rows, "steps"),
+        "average_final_distance": mean_or_nan(rows, "final_distance"),
+        "average_path_length_m": mean_or_nan(rows, "path_length_m"),
+        "average_min_depth_m": mean_or_nan(rows, "min_depth_m"),
     }
 
 
@@ -70,9 +80,13 @@ def main():
         "episodes",
         "success_rate",
         "collision_rate",
+        "altitude_violation_rate",
+        "timeout_rate",
         "average_reward",
         "average_steps",
         "average_final_distance",
+        "average_path_length_m",
+        "average_min_depth_m",
         "evaluation_log",
     ]
     with args.output.open("w", newline="", encoding="utf-8") as f:

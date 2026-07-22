@@ -1,0 +1,15 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "scratch_33m_45k_seed7",
+  "status": "completed",
+  "started_at": "2026-07-21T21:14:43",
+  "completed_at": "2026-07-22T04:38:31",
+  "elapsed_seconds": 26628.115,
+  "elapsed_hours": 7.396699,
+  "completed_episodes": 412,
+  "new_environment_interactions": 45000,
+  "agent_cumulative_steps": 45000,
+  "requested_total_steps": 45000,
+  "resume_model": null
+}

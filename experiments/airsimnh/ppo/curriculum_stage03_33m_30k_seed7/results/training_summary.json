@@ -1,0 +1,15 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "curriculum_stage03_33m_30k_seed7",
+  "status": "completed",
+  "started_at": "2026-07-22T07:39:05",
+  "completed_at": "2026-07-22T12:36:16",
+  "elapsed_seconds": 17830.995,
+  "elapsed_hours": 4.953054,
+  "completed_episodes": 348,
+  "new_environment_interactions": 30000,
+  "agent_cumulative_steps": 45000,
+  "requested_total_steps": 30000,
+  "resume_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7\\models\\ppo_final.pt"
+}

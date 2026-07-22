@@ -1,0 +1,15 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "curriculum_stage01_10m_5k_seed7",
+  "status": "completed",
+  "started_at": "2026-07-22T05:03:53",
+  "completed_at": "2026-07-22T05:56:25",
+  "elapsed_seconds": 3152.586,
+  "elapsed_hours": 0.875718,
+  "completed_episodes": 83,
+  "new_environment_interactions": 5000,
+  "agent_cumulative_steps": 5000,
+  "requested_total_steps": 5000,
+  "resume_model": null
+}
