@@ -1,3 +1,9 @@
 __pycache__/
 *.py[cod]
 
+# Generated AirSim artifacts that are too large for the source repository.
+experiments/**/*.pt
+experiments/**/recordings/
+experiments/**/results/training_action_log.csv
+experiments/**/results/*_trajectory.csv
+experiments/**/results/checkpoint_sweep*_episodes.csv

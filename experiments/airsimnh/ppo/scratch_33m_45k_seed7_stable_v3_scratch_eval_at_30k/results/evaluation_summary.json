@@ -1,0 +1,36 @@
+{
+  "algorithm": "ppo",
+  "model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\ppo_step_0030000.pt",
+  "seed": 7,
+  "requested_policy_mode": "both",
+  "modes": [
+    {
+      "policy_mode": "deterministic",
+      "episodes": 30,
+      "success_rate": 0.9666666666666667,
+      "collision_rate": 0.03333333333333333,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.03333333333333333,
+      "timeout_rate": 0.0,
+      "average_reward": 150.55363749287238,
+      "average_steps": 52.13333333333333,
+      "average_final_distance": 1.9629921164597164,
+      "average_path_length_m": 34.489586781998256,
+      "average_min_depth_m": 2.3447265625
+    },
+    {
+      "policy_mode": "stochastic",
+      "episodes": 30,
+      "success_rate": 0.7333333333333333,
+      "collision_rate": 0.1,
+      "altitude_violation_rate": 0.03333333333333333,
+      "unsafe_rate": 0.13333333333333333,
+      "timeout_rate": 0.2,
+      "average_reward": 95.01853618674451,
+      "average_steps": 90.7,
+      "average_final_distance": 3.8209129449045522,
+      "average_path_length_m": 45.22848730971037,
+      "average_min_depth_m": 1.2186360677083334
+    }
+  ]
+}

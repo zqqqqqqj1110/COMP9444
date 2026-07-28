@@ -197,12 +197,10 @@ class AirSimDroneEnv(gym.Env):
         terminated = bool(new_collision or reached_goal or out_of_altitude)
         truncated = self.steps >= self.config.max_steps
 
-        if reached_goal:
-            reward += self.config.goal_reward
-        if new_collision:
-            reward += self.config.collision_penalty
-        if out_of_altitude:
-            reward += self.config.altitude_penalty
+        goal_reward = self.config.goal_reward if reached_goal else 0.0
+        collision_penalty = self.config.collision_penalty if new_collision else 0.0
+        altitude_penalty = self.config.altitude_penalty if out_of_altitude else 0.0
+        reward += goal_reward + collision_penalty + altitude_penalty
         timeout_penalty = 0.0
         if truncated and not terminated:
             timeout_penalty = self.config.timeout_penalty
@@ -217,10 +215,15 @@ class AirSimDroneEnv(gym.Env):
                 "out_of_altitude": out_of_altitude,
                 "distance_to_target": distance,
                 "steps": self.steps,
+                "step_penalty": self.config.step_penalty,
                 "progress_reward": progress_reward,
                 "altitude_hold_penalty": altitude_hold_penalty,
                 "altitude_margin_penalty": altitude_margin_penalty,
+                "goal_reward": goal_reward,
+                "collision_penalty": collision_penalty,
+                "altitude_penalty": altitude_penalty,
                 "timeout_penalty": timeout_penalty,
+                "total_reward": reward,
             }
         )
         self.last_info = info

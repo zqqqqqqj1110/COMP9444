@@ -1,23 +1,110 @@
 # Autonomous Drone Navigation with Deep Reinforcement Learning
 
-This project studies visual autonomous drone navigation in Microsoft AirSim for the COMP9444 Neural Networks and Deep Learning project. It compares DQN, PPO trained from scratch, and PPO with curriculum learning under controlled interaction budgets.
+This COMP9444 project studies visual autonomous drone navigation in Microsoft
+AirSim. It compares a vanilla DQN baseline, PPO trained directly on the final
+route, and PPO trained with a three-stage curriculum.
 
-The final experimental scope uses two environments:
+The current formal experiment uses one fixed route in the AirSimNH scene and
+Seed 7. There is no offline dataset: observations and rewards are collected
+online from AirSim while the agent interacts with the simulator.
 
-- Blocks as the simple controlled baseline scene.
-- AirSimNH as the complex scene.
+## Final Result
+
+All methods used the same final route, observation, action space, reward,
+45,000-interaction budget, and maximum episode length. Checkpoints were selected
+with validation episodes and then tested for 50 fresh-seed episodes.
+
+Test configuration:
+
+```text
+Scene:       AirSimNH
+Train seed:  7
+Test seed:   20007
+Start:       (85.413, -15.334, -3.0)
+Target:      (117.756, -19.034, -3.0)
+Distance:    approximately 32.55 m
+Max steps:   150
+```
+
+Primary deterministic results:
+
+| Method | Selected checkpoint | Success | Collision | Timeout | Average steps | Final distance |
+|---|---|---:|---:|---:|---:|---:|
+| DQN Scratch | `dqn_step_0040000.pt` | `16%` | `72%` | `14%` | `86.80` | `4.47 m` |
+| **PPO Scratch** | **`ppo_step_0042500.pt`** | **`98%`** | **`2%`** | **`0%`** | **`52.28`** | **`2.01 m`** |
+| PPO Curriculum | `ppo_step_0020000.pt` in Stage 3 | `68%` | `2%` | `30%` | `83.46` | `14.66 m` |
+
+PPO stochastic-policy diagnostics:
+
+| Method | Success | Collision | Timeout | Average steps | Final distance |
+|---|---:|---:|---:|---:|---:|
+| PPO Scratch | `66%` | `34%` | `0%` | `64.08` | `3.26 m` |
+| PPO Curriculum | `46%` | `38%` | `16%` | `97.12` | `4.21 m` |
+
+The formal comparison table is:
+
+```text
+experiments/airsimnh/validated_comparison_seed7_test_seed20007.csv
+```
+
+For this route and seed, PPO Scratch is the strongest method. It learned a
+repeatable lateral detour around the blocking house. DQN usually followed the
+direct goal direction and collided, while Curriculum PPO was safe when it
+succeeded but timed out frequently.
+
+These results demonstrate fixed-route performance, not generalisation to unseen
+routes or scenes. Multiple seeds and perturbed start/target tests are future
+work.
+
+## Pretrained Models
+
+The three selected inference weights are published separately from the large
+experiment directories:
+
+| Model | Repository path | Deterministic success |
+|---|---|---:|
+| **PPO Scratch (recommended)** | `pretrained/airsimnh/ppo_scratch_seed7.pt` | **`98%`** |
+| PPO Curriculum | `pretrained/airsimnh/ppo_curriculum_seed7.pt` | `68%` |
+| DQN Scratch baseline | `pretrained/airsimnh/dqn_scratch_seed7.pt` | `16%` |
+
+SHA256 checksums:
+
+```text
+ppo_scratch_seed7.pt
+4F23F3EF8E5E7706224591CEECDCE9D3B413B35A89CF79341FFE3989FF6A9989
+
+ppo_curriculum_seed7.pt
+E5D07915E31853A72F24EA81E211A56228D992ED1379F5E57B314FCE1D6CDF67
+
+dqn_scratch_seed7.pt
+BC5E3C44D83A850CA3009E32E2A7909BDCFAEA73A943471CF5E6B8D897A9C92D
+```
+
+The `.pt` files are Git LFS objects. After cloning the repository:
+
+```powershell
+git lfs install
+git lfs pull
+```
+
+If `git lfs pull` is skipped, the apparent model file may only be a small text
+pointer and PyTorch will not be able to load it.
 
 ## RL Task
 
-At every environment step, the agent receives:
+Each observation contains:
 
-- A normalised `84 x 84` AirSim depth image.
-- Relative target position `(target - drone position)`.
-- Current linear velocity `(vx, vy, vz)`.
+- One normalised `84 x 84` front depth image.
+- Relative target position `(target - position)`, scaled by fixed constants.
+- Linear velocity `(vx, vy, vz)`, also scaled.
 
-The six discrete actions are:
+The image and six-dimensional navigation state are processed by a CNN and a
+fully connected network. The agent does not receive a map or explicit obstacle
+coordinates. Collision information is used only for reward and termination.
 
-| Action | Command |
+Discrete actions:
+
+| ID | Action |
 |---:|---|
 | 0 | Forward |
 | 1 | Left |
@@ -26,95 +113,118 @@ The six discrete actions are:
 | 4 | Down |
 | 5 | Hover |
 
-The current agent does not build a map or store explicit obstacle coordinates. It learns a mapping from the current depth image and navigation state to an action. Collision information is used for reward and termination, not included directly in the observation.
-
-Current reward configuration:
+Reward and termination configuration:
 
 | Component | Value |
 |---|---:|
 | Step penalty | `-0.05` |
-| Progress reward scale | `2.0` |
+| Progress reward | `2.0 * distance reduction` |
 | Goal reward | `+100` |
 | Collision penalty | `-100` |
 | Altitude violation penalty | `-100` |
-| Altitude hold penalty | `-0.25 * abs(z - target_z)` per step |
-| Altitude boundary margin | `1.5 m` |
-| Boundary proximity penalty | up to `-1.0` per metre inside the margin |
 | Timeout penalty | `-25` |
+| Altitude hold penalty | `-0.25 * abs(z - target_z)` |
 | Goal radius | `2 m` |
 | Valid NED altitude | `-10 <= z <= -1` |
 
-AirSim uses NED coordinates, so a more negative `z` value means a greater altitude.
+AirSim uses NED coordinates, so a more negative `z` means a greater altitude.
 
-PPO internally multiplies all environment rewards by `0.1` before critic and GAE calculations. This does not change which policy is optimal, but it prevents the `+/-100` terminal rewards from producing very large value gradients.
+## Methods
 
-## Stable PPO Revision
+### DQN Baseline
 
-The first AirSimNH comparison found that PPO Scratch and PPO Curriculum both failed at 45,000 interactions. Offline checkpoint inspection showed that the shared `Tanh` representation was almost completely saturated:
+The baseline is a vanilla DQN with:
 
-| Checkpoint | Hidden activation saturation |
-|---|---:|
-| PPO Scratch 5k | `100%` |
-| PPO Scratch 45k | `100%` |
-| Curriculum Stage 2 final | `82.4%` |
-| Curriculum Stage 3 final | `99.8%` |
+- A CNN depth encoder and six-dimensional navigation state.
+- A six-value Q-function output.
+- Uniform replay buffer.
+- Target network updated every 1,000 interactions.
+- Epsilon-greedy exploration from `1.0` towards `0.05`.
+- Huber TD loss and gradient clipping.
 
-The saturated networks were almost insensitive to the depth image and target state. The stable revision therefore adds:
+It does not use Double DQN, Dueling DQN, prioritized replay, or n-step returns.
+The report should therefore describe it as a vanilla DQN visual-navigation
+baseline, not an optimized state-of-the-art DQN.
 
-- Per-sample feature normalisation immediately before the shared `Tanh`.
-- Orthogonal CNN/hidden initialisation and a small actor-output initialisation.
-- PPO reward scaling of `0.1`.
-- Huber critic loss instead of unbounded value MSE.
-- Activation saturation, explained variance, and maximum action-probability diagnostics.
-- `ppo_best.pt`, selected by rolling success, unsafe rate, and final distance.
-- Optimizer reset by default when a curriculum stage changes target.
-- Deterministic Stage 1 and Stage 2 curriculum gates.
-- Continuous altitude-hold/boundary penalties and an explicit timeout penalty.
+### Stable PPO
 
-Old checkpoints remain valid for reproducing their existing evaluation behavior, but `train_ppo.py` deliberately refuses to resume them into a stable run. Start the stable curriculum from Stage 1 so that every transferred checkpoint uses the corrected representation and reward scale.
+PPO uses the same observation and actions. The shared representation feeds:
 
-Run the PPO regression tests without starting AirSim:
+- An actor that outputs six action logits.
+- A critic that estimates the state value.
 
-```powershell
-python -B -m unittest discover -s tests -v
-```
+The stable implementation includes:
 
-## Project Structure
+- Layer normalization before the shared `Tanh`.
+- Orthogonal initialization.
+- Reward scaling of `0.1` inside PPO.
+- Huber critic loss.
+- Four update epochs per rollout.
+- Linear entropy decay from `0.01` to `0.001`.
+- Activation saturation, explained variance, entropy, KL, and action-confidence
+  diagnostics.
+
+These changes fixed the hidden-layer saturation observed in the original PPO
+implementation.
+
+### PPO Curriculum
+
+Curriculum PPO transfers policy weights through progressively longer targets:
+
+| Stage | Target | New interactions | Max steps |
+|---|---|---:|---:|
+| 1 | `(95.190, -14.491, -3.0)` | `5,000` | `70` |
+| 2 | `(107.635, -10.842, -3.0)` | `10,000` | `110` |
+| 3 | `(117.756, -19.034, -3.0)` | `30,000` | `150` |
+
+The optimizer is reset when the target changes. The full curriculum consumes
+the same 45,000 environment interactions as Scratch PPO.
+
+Stage 1 and Stage 2 have separate `_gate` directories containing evaluation
+logs only. Those gates determined whether training could continue. Stage 3 is
+the final task, so its training and final evaluation are stored together and
+there is no Stage 3 `_gate` directory.
+
+The words `stage2_pilot` and `stage3_pilot` are historical run tags. They do not
+represent different algorithms or PPO versions.
+
+## Experimental Protocol
+
+The primary comparison is performed at 45,000 consumed interactions:
+
+| Comparison | Question |
+|---|---|
+| DQN Scratch vs PPO Scratch | Which algorithm learns the final route more effectively? |
+| PPO Scratch vs PPO Curriculum | Does progressive target difficulty improve PPO? |
+
+Raw rewards from Curriculum Stages 1 and 2 must not be compared directly with
+Scratch rewards because the target distances and episode limits are different.
+All final models are tested on the same Stage 3 route.
+
+Checkpoint selection is separated from final testing:
 
 ```text
-rl_drone_navigation/
-  README.md
-  requirements.txt
-  airsim_settings_sample.json
-  run_ppo_training.ps1
-  run_comparison_experiment.ps1
-  src/
-    airsim_drone_env.py
-    check_setup.py
-    dqn_agent.py
-    evaluate.py
-    experiment_paths.py
-    list_scenes.py
-    manual_control.py
-    plot_results.py
-    ppo_agent.py
-    smoke_test_env.py
-    summarize_experiments.py
-    train_dqn.py
-    train_ppo.py
-  notebooks/
-    COMP9444_AirSim_Drone_Navigation.ipynb
-  tests/
-    test_ppo_agent.py
-  experiments/
-    <scenario>/
-      dqn/<run-name>/
-      ppo/<run-name>/
+Selection Stage 1: all checkpoints x 5 episodes, seed 7
+Selection Stage 2: top 3 checkpoints x 30 episodes, seed 10007
+Final test:         selected model x 50 episodes, seed 20007
 ```
+
+Selection episodes are validation data. Only the independent final-test rows
+should be reported as final performance.
+
+Training times:
+
+| Method | Training time |
+|---|---:|
+| DQN Scratch | `7.41 h` |
+| PPO Scratch | `6.50 h` |
+| PPO Curriculum Stage 1 + 2 + 3 | approximately `6.51 h` |
+
+Evaluation and checkpoint-selection time is excluded.
 
 ## Setup
 
-Recommended environment:
+Create the Python environment:
 
 ```powershell
 conda create -n airsim-rl python=3.10 -y
@@ -124,466 +234,254 @@ pip install -r requirements.txt
 python -m ipykernel install --user --name airsim-rl --display-name "Python (airsim-rl)"
 ```
 
-AirSim uses the old `msgpack-rpc-python` package. If importing AirSim fails with `No module named 'tornado.platform.auto'`, install the compatible versions:
+AirSim depends on an old RPC stack. If importing AirSim fails with
+`No module named 'tornado.platform.auto'`, install:
 
 ```powershell
 pip install "tornado==4.5.3" "ipykernel==5.5.6" "jupyter-client==7.1.2"
 ```
 
-Start a scene, wait for it to load, and test the connection:
+Start AirSimNH and verify the connection:
 
 ```powershell
 D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe
 python src\check_setup.py --connect
 ```
 
-List installed scene executables:
+`--scenario` controls experiment output paths; it does not launch or switch the
+Unreal scene.
+
+The AirSimNH Unreal environment is not included in this repository. Download
+and start a compatible AirSimNH build before inference.
+
+Run the regression tests without AirSim:
 
 ```powershell
-python src\list_scenes.py
+python -B -m unittest discover -s tests -v
 ```
 
-`--scenario` is an output label. It does not switch the Unreal scene. The correct scene executable must be running before a direct training command is used.
+## Running Experiments
 
-## Manual Route Selection
+### New Controlled Comparison
 
-Start the required scene, then run:
+Edit the configuration block at the top of:
+
+```text
+run_comparison_experiment.ps1
+```
+
+Use a new seed or run tag. Existing run directories are intentionally rejected
+to prevent accidental result overwrite. Then run:
 
 ```powershell
-conda activate airsim-rl
-cd D:\AirSim\rl_drone_navigation
+.\run_comparison_experiment.ps1
+```
+
+The runner starts AirSim, checks the spawn, trains enabled methods, saves
+checkpoints, performs two-stage selection and evaluation, records training
+times, and closes AirSim in a `finally` block.
+
+### Select Existing Checkpoints
+
+`run_checkpoint_selection.ps1` applies the common two-stage protocol to the
+three completed Seed 7 runs and writes a unified comparison CSV. This has
+already been completed for the current results.
+
+For a new set of runs, update the run names and test-seed offsets before using:
+
+```powershell
+.\run_checkpoint_selection.ps1
+```
+
+### Evaluate One Model
+
+Example deterministic evaluation of the selected PPO Scratch model:
+
+```powershell
+python src\evaluate.py `
+  --algorithm ppo --scenario airsimnh `
+  --run-name ppo_scratch_manual_test `
+  --model pretrained\airsimnh\ppo_scratch_seed7.pt `
+  --policy-mode deterministic --episodes 20 --seed 30007 `
+  --max-steps 150 `
+  --start-x 85.413 --start-y -15.334 --start-z -3.0 `
+  --target-x 117.756 --target-y -19.034 --target-z -3.0
+```
+
+PPO supports `deterministic`, `stochastic`, or `both`. DQN evaluation is
+deterministic because epsilon exploration is disabled during deployment.
+
+### Record Inference
+
+Edit the configuration block in `run_inference_recording.ps1`, then run:
+
+```powershell
+.\run_inference_recording.ps1
+```
+
+For the best current model, use:
+
+```text
+Algorithm:   ppo
+PolicyMode:  deterministic
+Model:       pretrained/airsimnh/ppo_scratch_seed7.pt
+Start:       (85.413, -15.334, -3.0)
+Target:      (117.756, -19.034, -3.0)
+MaxSteps:    150
+```
+
+Recordings contain RGB video, an inset of the depth input, action, reward,
+distance, position, and outcome.
+
+### Inspect a Route Manually
+
+Start the scene and run:
+
+```powershell
 python src\manual_control.py
 ```
 
-Controls:
+Useful controls:
 
 | Key | Action |
 |---|---|
 | `W/S` | Forward/backward |
 | `A/D` | Left/right |
 | `R/F` | Up/down |
-| `Q/E` | Rotate left/right |
-| `P` | Print and save the current coordinates |
+| `Q/E` | Rotate |
+| `P` | Print and save coordinates |
 | `H` | Hover and print coordinates |
 | `L` | Land and exit |
 | `Esc` | Hover and exit |
 
-Saved coordinates are appended to `results/selected_targets.txt`.
+The RL policy has no backward or yaw action, so a manually selected RL route
+must not depend on those controls.
 
-The RL action space has no backward or yaw action. When checking whether an RL route is feasible, avoid relying on `S`, `Q`, or `E`.
-
-Visible foliage is not automatically a physical obstacle. Unreal assets only generate AirSim collisions when their collision geometry and collision responses are enabled. Use trunks, walls, buildings, rocks, or other objects that have been verified with `simGetCollisionInfo()` for obstacle-avoidance experiments.
-
-## Final Comparison Design
-
-The experiment has three methods:
-
-| Method | Training task | Total budget |
-|---|---|---:|
-| DQN Scratch | Train directly on the final target | `45,000 steps` |
-| PPO Scratch | Train directly on the final target | `45,000 steps` |
-| PPO Curriculum | Three progressively harder targets | `45,000 steps` |
-
-This design supports two controlled comparisons:
-
-1. DQN Scratch versus PPO Scratch measures the algorithm difference.
-2. PPO Scratch versus PPO Curriculum measures the effect of curriculum learning.
-
-All three methods use the same final task, start position, observation, action space, reward, maximum episode length, interaction budget, seeds, and deterministic evaluation procedure.
-
-### Why Total Steps Are Used
-
-`max_steps * episodes` is only a theoretical upper limit. Episodes can finish early because of success, collision, or altitude violation. Therefore, equal episode counts do not guarantee equal training data.
-
-The `--total-steps` option counts new interactions in the current run:
+## Important Files
 
 ```text
-one step = observe -> choose action -> move drone -> receive reward
+run_comparison_experiment.ps1   train and evaluate controlled comparisons
+run_checkpoint_selection.ps1    select checkpoints and run final tests
+run_inference_recording.ps1     record policy inference
+
+pretrained/airsimnh/             selected Git LFS inference weights
+
+src/airsim_drone_env.py         observation, action, reward, termination
+src/dqn_agent.py                DQN network and replay learning
+src/ppo_agent.py                PPO actor-critic and optimization
+src/train_dqn.py                DQN training entry point
+src/train_ppo.py                PPO training entry point
+src/evaluate.py                 deterministic/stochastic evaluation
+src/sweep_checkpoints.py        two-stage checkpoint selection
+src/trajectory_logging.py       action and reward-component logs
+
+notebooks/COMP9444_AirSim_Drone_Navigation.ipynb
 ```
 
-For resumed PPO curriculum stages, the budget is reset for each stage. For example, Stage 3 receives 30,000 new interactions even though the checkpoint already contains the 15,000 interactions from Stages 1 and 2.
+## Output Structure
 
-## Confirmed AirSimNH Route
-
-The approved AirSimNH coordinates use a common safe altitude of `z=-3.0`:
-
-```text
-Start   = (85.413,  -15.334, -3.0)
-Stage 1 = (95.190,  -14.491, -3.0)
-Stage 2 = (107.635, -10.842, -3.0)
-Stage 3 = (117.756, -19.034, -3.0)
-```
-
-Distances measured from the common start:
-
-| Stage | Approximate distance | New interactions | Max steps per episode |
-|---|---:|---:|---:|
-| Stage 1 | `9.81 m` | `5,000` | `70` |
-| Stage 2 | `22.67 m` | `10,000` | `110` |
-| Stage 3 | `32.55 m` | `30,000` | `150` |
-| Curriculum total |  | `45,000` |  |
-
-DQN Scratch and PPO Scratch train directly from the common start to Stage 3 for 45,000 interactions with `max_steps=150`.
-
-### Coordinate Smoke Test
-
-Before formal training:
-
-```powershell
-python src\smoke_test_env.py `
-  --steps 3 --action 5 --require-clean `
-  --start-x 85.413 --start-y -15.334 --start-z -3.0 `
-  --target-x 117.756 --target-y -19.034 --target-z -3.0
-```
-
-The initial distance should be approximately `32.55 m`, spawn error should remain below `0.75 m`, and no new collision or altitude violation should occur.
-
-## Running the Comparison
-
-The recommended entry point is:
-
-```powershell
-.\run_comparison_experiment.ps1
-```
-
-The configuration section at the top of the script contains:
-
-- Scene label and executable.
-- Seed.
-- A run tag that keeps stable experiments separate from legacy outputs.
-- Method enable/disable switches.
-- Confirmed start and target coordinates.
-- Stage and scratch interaction budgets.
-- PPO hyperparameters.
-- Stable PPO reward scale, value loss, best-model window, and curriculum gates.
-- The last curriculum stage to run (`1`, `2`, or `3`).
-- Evaluation episode counts.
-- Automatic scene startup and shutdown settings.
-
-Default method switches:
-
-```powershell
-$RunTag = "stable_v2"
-$RunDqnScratch = $true
-$RunPpoScratch = $true
-$RunPpoCurriculum = $true
-$CurriculumLastStage = 3
-```
-
-The script performs the following workflow:
-
-1. Rejects any run whose output directory already exists.
-2. Starts the configured AirSim scene if the RPC port is not open.
-3. Runs a clean-spawn hover smoke test.
-4. Trains each enabled method sequentially.
-5. Saves checkpoints every 5,000 new interactions.
-6. Saves `ppo_best.pt` from rolling training performance.
-7. Evaluates the Stage 1/2 best model and stops if a curriculum gate fails.
-8. Transfers best PPO weights while resetting the optimizer between stages.
-9. Evaluates the comparable 30,000-step checkpoints.
-10. Evaluates final and best PPO checkpoints at 45,000 steps.
-11. Records the duration of every training run and curriculum stage.
-12. Closes the configured AirSim scene in a `finally` block, including after failures.
-
-To run only one method on a machine, disable the other two switches. Example for DQN only:
-
-```powershell
-$RunDqnScratch = $true
-$RunPpoScratch = $false
-$RunPpoCurriculum = $false
-```
-
-Never reuse a run name. Change `$Seed` or `$RunTag` before starting a new experiment. The stable defaults use `$RunTag = "stable_v2"`, so the original failed runs remain untouched.
-
-### First Stable Validation Run
-
-Do not immediately repeat all three 45k experiments. First run only the corrected Curriculum Stage 1:
-
-```powershell
-$RunTag = "stable_v2_stage1_pilot"
-$RunDqnScratch = $false
-$RunPpoScratch = $false
-$RunPpoCurriculum = $true
-$CurriculumLastStage = 1
-$RequireCurriculumGates = $true
-```
-
-Then run:
-
-```powershell
-.\run_comparison_experiment.ps1
-```
-
-The runner trains 5,000 interactions, evaluates `ppo_best.pt` for 20 deterministic episodes, records the gate result, and closes AirSim. Continue to a full experiment only when all of the following hold:
-
-| Stage 1 pilot check | Required value |
-|---|---:|
-| Deterministic success rate | `>= 80%` |
-| Collision plus altitude unsafe rate | `<= 20%` |
-| `activation_saturation` | `< 5%` throughout training |
-| Value loss | finite, without sustained growth |
-| Final altitude | remains inside `-10 <= z <= -1` |
-
-If the gate passes, use a fresh tag such as `stable_v2_full`, restore `$CurriculumLastStage = 3`, and run the full comparison. A failed gate is a useful diagnostic result; do not bypass it by setting `$RequireCurriculumGates = $false` until the failure has been inspected.
-
-## Checkpoints and Fair Comparisons
-
-Scratch checkpoints are saved at:
-
-```text
-experiments/<scenario>/dqn/scratch_33m_45k_seed7_stable_v2/models/dqn_step_0030000.pt
-experiments/<scenario>/dqn/scratch_33m_45k_seed7_stable_v2/models/dqn_final.pt
-
-experiments/<scenario>/ppo/scratch_33m_45k_seed7_stable_v2/models/ppo_step_0030000.pt
-experiments/<scenario>/ppo/scratch_33m_45k_seed7_stable_v2/models/ppo_best.pt
-experiments/<scenario>/ppo/scratch_33m_45k_seed7_stable_v2/models/ppo_final.pt
-```
-
-For PPO Curriculum, the first 15,000 interactions are collected in Stages 1 and 2. Therefore, the fair 30,000-total-step checkpoint is 15,000 interactions into Stage 3:
-
-```text
-experiments/<scenario>/ppo/curriculum_stage03_33m_30k_seed7_stable_v2/models/ppo_step_0015000.pt
-```
-
-The final curriculum model has received:
-
-```text
-5,000 + 10,000 + 30,000 = 45,000 total interactions
-```
-
-The primary final comparison is at 45,000 total interactions. The 30,000-step comparison is used to discuss sample efficiency.
-
-## Direct Training Commands
-
-The comparison runner is preferred, but the training scripts can also be called directly after AirSim is started.
-
-DQN Scratch:
-
-```powershell
-python src\train_dqn.py `
-  --scenario airsimnh --run-name scratch_33m_45k_seed7_stable_v2 `
-  --total-steps 45000 --max-steps 150 `
-  --start-x 85.413 --start-y -15.334 --start-z -3.0 `
-  --target-x 117.756 --target-y -19.034 --target-z -3.0 `
-  --checkpoint-every-steps 5000 --seed 7
-```
-
-PPO Scratch:
-
-```powershell
-python src\train_ppo.py `
-  --scenario airsimnh --run-name scratch_33m_45k_seed7_stable_v2 `
-  --total-steps 45000 --max-steps 150 --rollout-steps 500 `
-  --start-x 85.413 --start-y -15.334 --start-z -3.0 `
-  --target-x 117.756 --target-y -19.034 --target-z -3.0 `
-  --learning-rate 1e-4 --batch-size 64 --update-epochs 4 `
-  --reward-scale 0.1 --value-loss huber `
-  --best-window 20 --best-min-episodes 20 `
-  --checkpoint-every-steps 5000 --seed 7
-```
-
-The curriculum commands are generated by `run_comparison_experiment.ps1`. Stage 2 and Stage 3 load the previous `ppo_best.pt` weights and reset Adam state. Pass `--resume-optimizer` only for a true continuation of the same target and reward configuration, not for a curriculum stage change.
-
-The older `run_ppo_training.ps1` remains available for a single episode-budget PPO run. It is not the preferred runner for the controlled DQN/PPO comparison.
-
-## Seeds
-
-The formal seed set is:
-
-```text
-7, 17, 27
-```
-
-Seeds control:
-
-- Neural-network initialisation.
-- PPO action sampling and minibatch order.
-- DQN epsilon exploration.
-- DQN replay-buffer sampling.
-- Python, NumPy, and PyTorch random-number generation.
-
-Seeds do not change the scene, start point, target point, obstacles, reward, or interaction budget. AirSim physics and GPU execution may still prevent bit-for-bit reproducibility.
-
-Run every method with every seed in both scenes:
-
-| Scene | DQN Scratch | PPO Scratch | PPO Curriculum |
-|---|---|---|---|
-| Blocks | Seeds 7/17/27 | Seeds 7/17/27 | Seeds 7/17/27 |
-| AirSimNH | Seeds 7/17/27 | Seeds 7/17/27 | Seeds 7/17/27 |
-
-Blocks should use separately calibrated coordinates with approximately the same 10 m, 23 m, and 33 m distances. All methods within Blocks must use exactly the same Blocks coordinates.
-
-## Three-Machine Allocation
-
-A balanced allocation is:
-
-| Machine | Jobs |
-|---|---|
-| Machine A | Blocks seeds 7 and 17, all three methods |
-| Machine B | AirSimNH seeds 7 and 17, all three methods |
-| Machine C | Blocks seed 27 and AirSimNH seed 27, all three methods |
-
-Each machine receives six complete method/seed jobs. Install both scenes on Machine C or reassign its jobs while keeping the same code revision and configuration.
-
-Run only one AirSim process and one training process at a time on each machine.
-
-## Evaluation
-
-Deterministic evaluation uses:
-
-```powershell
-python src\evaluate.py `
-  --algorithm ppo --scenario airsimnh `
-  --run-name scratch_33m_45k_seed7_stable_v2_best `
-  --model experiments\airsimnh\ppo\scratch_33m_45k_seed7_stable_v2\models\ppo_best.pt `
-  --episodes 50 --max-steps 150 `
-  --start-x 85.413 --start-y -15.334 --start-z -3.0 `
-  --target-x 117.756 --target-y -19.034 --target-z -3.0
-```
-
-During evaluation:
-
-- DQN selects the action with the largest Q-value and does not use epsilon exploration.
-- PPO selects the action with the largest policy logit instead of sampling.
-
-### Inference Video Recording
-
-Use `run_inference_recording.ps1` to launch a scene, load one checkpoint, record inference, and close the scene automatically. Its configuration section controls the model, route, policy mode, number of attempts, and video settings.
-
-```powershell
-.\run_inference_recording.ps1
-```
-
-The current default records the Stage 2 stable PPO checkpoint on the 23 m route. It uses `stochastic` mode and stops after the first successful attempt because this checkpoint achieved high sampled-policy training success but failed its deterministic gate. This recording demonstrates the sampled policy; it must not be reported as deterministic evaluation performance.
-
-Set `$PolicyMode = "deterministic"` to record deployment-style PPO inference, or use DQN with deterministic mode. Each invocation creates a timestamped directory beside the selected run:
-
-```text
-experiments/<scenario>/<algorithm>/<run-name>/recordings/<mode>_<timestamp>/
-  episode_001_success.mp4
-  episode_001_success_preview.jpg
-  inference_steps.csv
-  inference_episodes.csv
-  inference_summary.json
-```
-
-The MP4 contains the drone's front RGB camera, current action, cumulative reward, distance, position, outcome, and a colour inset of the depth observation supplied to the policy. This is an AirSim camera recording rather than a desktop capture of the Unreal Engine window.
-
-Required metrics:
-
-| Metric | Desired direction |
-|---|---|
-| Success rate | Higher |
-| Collision rate | Lower |
-| Altitude violation rate | Lower |
-| Average reward | Higher |
-| Average final distance | Lower |
-| Average successful steps | Lower when success remains high |
-| Steps to reach 50%/80% success | Lower |
-| Path length | Lower when success remains high |
-| Minimum observed depth | Higher safety clearance |
-| Dominant action fraction | Avoid one-action collapse |
-
-Report `mean +/- standard deviation` across seeds. Learning-curve x-axes should use environment interactions rather than episodes.
-
-Stable PPO update logs also contain:
-
-| Diagnostic | Interpretation |
-|---|---|
-| `activation_saturation` | Fraction of shared hidden values with `abs(value) > 0.99`; target `< 0.05` |
-| `activation_abs_mean` | Magnitude of the shared representation after normalisation |
-| `max_action_probability` | Mean confidence in the most probable action |
-| `explained_variance` | Critic fit quality; higher is better, but task metrics remain primary |
-
-Recommended performance targets are:
-
-| Evaluation setting | Success | Collision | Altitude violation |
-|---|---:|---:|---:|
-| Fixed start/target sanity test | `>= 90%` | `<= 5%` | `<= 2%` |
-| AirSimNH final route | `>= 70%` initially; aim for `>= 85%` | `<= 15%` | `<= 5%` |
-| Perturbed start or unseen route | `>= 60%` | `<= 20%` | `<= 5%` |
-
-The current final target still supplies only one end position. If stable PPO passes Stage 1 and Stage 2 but repeatedly fails Stage 3, the next experiment should represent the manually verified route as sequential waypoints or use simulator-only route-progress shaping. This tests whether Euclidean distance reward is penalising the necessary lateral detour; it should be treated as a separate reward/task ablation rather than mixed into the first stable PPO validation.
-
-## Experiment Outputs
-
-Each named run contains:
+Each training run contains:
 
 ```text
 experiments/<scenario>/<algorithm>/<run-name>/
   metadata.json
   models/
     <algorithm>_final.pt
-    ppo_best.pt               # PPO only
-    step checkpoints
+    <algorithm>_step_*.pt
+    dqn_best_deterministic.pt       # DQN only
+    ppo_best.pt                     # PPO rolling-training candidate
+    ppo_best_deterministic.pt       # PPO selected validation model
   results/
     training_log.csv
+    training_action_log.csv         # PPO only, one row per interaction
     training_curves.png
     training_summary.json
-    evaluation_log.csv
-    ppo_update_log.csv        # PPO only
+    ppo_update_log.csv              # PPO only
+    checkpoint_sweep_stage1.csv
+    checkpoint_sweep_stage2.csv
+    checkpoint_sweep_two_stage_summary.json
 ```
 
-Each successful DQN/PPO training run writes `training_summary.json` containing:
+Evaluation directories contain:
 
 ```text
-started_at
-completed_at
-elapsed_seconds
-elapsed_hours
-completed_episodes
-new_environment_interactions
-requested_total_steps
-agent_cumulative_steps        # resumed PPO runs
-best_model                    # PPO only
-best_window_metrics           # PPO only
+evaluation_deterministic_log.csv
+evaluation_deterministic_trajectory.csv
+evaluation_stochastic_log.csv
+evaluation_stochastic_trajectory.csv
+evaluation_mode_comparison.csv
+evaluation_summary.json
 ```
 
-The comparison runner also writes one timing table per scenario and seed:
+Trajectory logs record every action, before/after position, target distance,
+reward sign and magnitude, individual reward components, terminal outcome, and
+collision object.
 
-```text
-experiments/<scenario>/comparison_seed7_stable_v2_training_times.csv
-```
+## GitHub Upload
 
-Its rows separately identify:
+Do not upload every checkpoint from `experiments/`. The three completed training
+runs contain more than 1 GB of intermediate `.pt` files. `.gitignore` excludes
+those checkpoints, recordings, and large step-level trajectory logs.
 
-```text
-DQN Scratch final task
-PPO Scratch final task
-PPO Curriculum Stage 1
-PPO Curriculum Stage 2
-PPO Curriculum Stage 3
-```
+The ignore rules prevent new generated checkpoints from being added. They do
+not remove legacy checkpoints that were already committed in older Git history.
+History cleanup is a separate maintainer operation and should not be performed
+casually on a shared branch.
 
-The CSV includes algorithm, method, stage, run name, completion status, timestamps, elapsed seconds, and elapsed hours. Evaluation time is excluded. Failed training commands are recorded with `status=failed` before the runner closes AirSim.
-
-Collect scenario directories from all machines into one central `experiments` directory. Scenario, algorithm, run name, and seed prevent path conflicts.
-
-Generate the summary table:
+Only the selected files under `pretrained/airsimnh/` are intended for GitHub.
+They are configured for Git LFS in `.gitattributes`. Before committing:
 
 ```powershell
-python src\summarize_experiments.py
+git lfs install
+git lfs status
+git status --short
 ```
 
-This creates `experiments\summary.csv`. It is generated output and can be recreated from the individual `evaluation_log.csv` files.
+Check that the three `pretrained/*.pt` files appear as LFS objects and that
+unwanted experiment checkpoints are not staged.
 
-## Notebook and Rubric Evidence
+## Limitations
 
-Open:
+- The formal table contains only Seed 7.
+- Training and testing use one fixed AirSimNH route.
+- Test seeds separate selection from testing but do not change the scene layout.
+- The policy has one front depth frame and no recurrent memory or SLAM.
+- The discrete action space has no backward or yaw action.
+- AirSim collision geometry may differ from visible meshes, especially foliage.
+- Simulator performance does not establish real-drone transfer.
+- PPO received stabilization changes that are not all mirrored in vanilla DQN;
+  conclusions should refer to the implemented systems, not all PPO and DQN
+  variants.
+
+Generalisation should be evaluated with safe start/target perturbations,
+additional routes, different scenes, and multiple training seeds. Improving
+generalisation would require training-time randomisation or multi-route
+training; repeated inference alone does not update the policy.
+
+## Notebook
+
+The project notebook is:
 
 ```text
-D:\AirSim\rl_drone_navigation\notebooks\COMP9444_AirSim_Drone_Navigation.ipynb
+notebooks/COMP9444_AirSim_Drone_Navigation.ipynb
 ```
 
-The final notebook should include:
+It should use the final comparison CSV and include:
 
-1. Problem statement and motivation for visual autonomous navigation.
-2. AirSim task, observation, action, reward, and termination definitions.
-3. Depth-image examples and analysis of scene/task difficulty.
-4. DQN, PPO, and curriculum-learning methods with sources and implementation details.
-5. DQN-versus-PPO and PPO-Scratch-versus-Curriculum controlled comparisons.
-6. Blocks-versus-AirSimNH comparison.
-7. Training curves, final metric tables, and mean/standard deviation over seeds.
-8. Discussion of collision geometry, fixed routes, discrete actions, lack of memory/SLAM, compute limits, and simulator-to-real transfer.
+1. Problem statement and motivation.
+2. AirSim task, observation, actions, reward, and termination analysis.
+3. Depth-image examples and route difficulty.
+4. DQN, PPO, stable PPO changes, and curriculum method.
+5. Training curves and the validated final comparison.
+6. Discussion of the DQN failure mode, Curriculum timeouts, limitations, and
+   future generalisation experiments.
 
-These items map directly to the COMP9444 rubric sections for RL task exploration, models and methods, results, discussion, and reproducibility.
+## References
+
+1. Shah, S., Dey, D., Lovett, C., and Kapoor, A. "AirSim: High-Fidelity Visual
+   and Physical Simulation for Autonomous Vehicles." Field and Service
+   Robotics, 2018.
+2. Mnih, V. et al. "Human-level control through deep reinforcement learning."
+   Nature, 2015.
+3. Schulman, J. et al. "Proximal Policy Optimization Algorithms." arXiv:
+   1707.06347, 2017.

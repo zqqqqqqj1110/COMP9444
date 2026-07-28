@@ -1,0 +1,3 @@
+"scenario","seed","algorithm","method","stage","run_name","status","started_at","completed_at","elapsed_seconds","elapsed_hours"
+"airsimnh","7","ppo","curriculum","stage01_10m","curriculum_stage01_10m_5k_seed7_stable_v3_stage2_pilot","completed","2026-07-26T13:00:02.7292070+08:00","2026-07-26T13:47:21.0159356+08:00","2838.285","0.788412"
+"airsimnh","7","ppo","curriculum","stage02_23m","curriculum_stage02_23m_10k_seed7_stable_v3_stage2_pilot","completed","2026-07-26T14:00:42.0661854+08:00","2026-07-26T15:28:50.1870958+08:00","5288.119","1.468922"

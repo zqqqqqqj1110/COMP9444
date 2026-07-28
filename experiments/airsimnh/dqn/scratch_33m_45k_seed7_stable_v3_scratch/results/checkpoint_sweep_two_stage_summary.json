@@ -1,0 +1,31 @@
+{
+  "algorithm": "dqn",
+  "policy_mode": "deterministic",
+  "selection_protocol": "two_stage",
+  "stage1": {
+    "episodes_per_checkpoint": 5,
+    "seed": 7,
+    "candidate_count": 19,
+    "advanced_count": 3,
+    "advanced_checkpoints": [
+      "dqn_step_0040000.pt",
+      "dqn_step_0015000.pt",
+      "dqn_step_0022500.pt"
+    ]
+  },
+  "stage2": {
+    "episodes_per_checkpoint": 30,
+    "seed": 10007,
+    "candidate_count": 3
+  },
+  "selected_source_checkpoint": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\dqn_step_0040000.pt",
+  "selected_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\dqn_best_deterministic.pt",
+  "previous_single_stage_model_backup": null,
+  "selection_order": [
+    "success_rate descending",
+    "unsafe_rate ascending",
+    "average_final_distance ascending",
+    "average_steps ascending"
+  ],
+  "final_test_note": "Run a separate evaluation with a new seed after selection; do not report Stage 1 or Stage 2 selection episodes as test results."
+}

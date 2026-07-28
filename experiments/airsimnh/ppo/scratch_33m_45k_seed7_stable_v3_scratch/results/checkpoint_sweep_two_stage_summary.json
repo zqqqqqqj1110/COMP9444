@@ -1,0 +1,31 @@
+{
+  "algorithm": "ppo",
+  "policy_mode": "deterministic",
+  "selection_protocol": "two_stage",
+  "stage1": {
+    "episodes_per_checkpoint": 5,
+    "seed": 7,
+    "candidate_count": 20,
+    "advanced_count": 3,
+    "advanced_checkpoints": [
+      "ppo_final.pt",
+      "ppo_step_0045000.pt",
+      "ppo_step_0042500.pt"
+    ]
+  },
+  "stage2": {
+    "episodes_per_checkpoint": 30,
+    "seed": 10007,
+    "candidate_count": 3
+  },
+  "selected_source_checkpoint": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\ppo_step_0042500.pt",
+  "selected_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\ppo_best_deterministic.pt",
+  "previous_single_stage_model_backup": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\ppo_best_deterministic_single_stage.pt",
+  "selection_order": [
+    "success_rate descending",
+    "unsafe_rate ascending",
+    "average_final_distance ascending",
+    "average_steps ascending"
+  ],
+  "final_test_note": "Run a separate evaluation with a new seed after selection; do not report Stage 1 or Stage 2 selection episodes as test results."
+}

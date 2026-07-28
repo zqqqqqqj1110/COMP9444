@@ -1,0 +1,31 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "curriculum_stage03_33m_30k_seed7_stable_v3_stage3_pilot",
+  "status": "completed",
+  "started_at": "2026-07-26T16:16:53",
+  "completed_at": "2026-07-26T20:31:54",
+  "elapsed_seconds": 15298.554,
+  "elapsed_hours": 4.249598,
+  "completed_episodes": 274,
+  "new_environment_interactions": 30000,
+  "agent_cumulative_steps": 41500,
+  "requested_total_steps": 30000,
+  "resume_model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\ppo\\curriculum_stage02_23m_10k_seed7_stable_v3_stage2_pilot\\models\\ppo_best_deterministic.pt",
+  "resume_optimizer": false,
+  "entropy_coef_start": 0.01,
+  "entropy_coef_end": 0.001,
+  "entropy_schedule": "linear",
+  "best_model": "experiments\\airsimnh\\ppo\\curriculum_stage03_33m_30k_seed7_stable_v3_stage3_pilot\\models\\ppo_best.pt",
+  "best_window_metrics": {
+    "success_rate": 0.65,
+    "unsafe_rate": 0.15,
+    "mean_final_distance": 4.7157663173688436,
+    "policy_update": 59,
+    "next_optimizer_update": 60,
+    "global_step": 41500,
+    "window_episodes": 20,
+    "saved_before_optimizer_update": true
+  },
+  "training_action_log": "experiments\\airsimnh\\ppo\\curriculum_stage03_33m_30k_seed7_stable_v3_stage3_pilot\\results\\training_action_log.csv"
+}

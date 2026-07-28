@@ -2,16 +2,12 @@
 $Scenario = "AirSimNH"
 $SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
 $Seed = 7
-$RunTag = "stable_v2_stage2_pilot"
-#$RunTag = "stable_v2"
+$RunTag = "stable_v3_scratch"
 
 # Enable any combination. A fresh run directory is required for every enabled job.
-#$RunDqnScratch = $true
-#$RunPpoScratch = $true
-#$RunPpoCurriculum = $true
-$RunDqnScratch = $false
-$RunPpoScratch = $false
-$RunPpoCurriculum = $true
+$RunDqnScratch = $true
+$RunPpoScratch = $true
+$RunPpoCurriculum = $false
 
 $StartX = 85.413
 $StartY = -15.334
@@ -45,9 +41,15 @@ $PpoStage2LearningRate = 1e-4
 $PpoStage3LearningRate = 7.5e-5
 $PpoRewardScale = 0.1
 $PpoValueLoss = "huber"
+$PpoEntropyCoefStart = 0.01
+$PpoEntropyCoefEnd = 0.001
 $PpoBestWindow = 20
 $PpoBestMinEpisodes = 20
-$CheckpointEverySteps = 5000
+$CheckpointEverySteps = 2500
+$CheckpointSweepStage1Episodes = 5
+$CheckpointSweepTopK = 3
+$CheckpointSweepStage2Episodes = 30
+$FinalTestSeedOffset = 20000
 
 $EvaluateAt30000Steps = $true
 $EvaluatePpoBestCheckpoints = $true
@@ -230,6 +232,8 @@ function Invoke-Evaluation {
         [string]$RunName,
         [string]$ModelPath,
         [int]$Episodes,
+        [string]$PolicyMode = "deterministic",
+        [int]$EvaluationSeed = $Seed,
         [int]$MaxSteps = $FinalMaxSteps,
         [double]$TargetX = $FinalTargetX,
         [double]$TargetY = $FinalTargetY,
@@ -242,7 +246,9 @@ function Invoke-Evaluation {
         "--scenario", $script:ScenarioSlug,
         "--run-name", $RunName,
         "--model", $ModelPath,
+        "--policy-mode", $PolicyMode,
         "--episodes", $Episodes,
+        "--seed", $EvaluationSeed,
         "--max-steps", $MaxSteps,
         "--start-x", $StartX,
         "--start-y", $StartY,
@@ -252,6 +258,38 @@ function Invoke-Evaluation {
         "--target-z", $TargetZ
     )
     Invoke-PythonCommand -Description "Evaluating $Algorithm run '$RunName'" -Arguments $arguments
+}
+
+function Invoke-CheckpointSweep {
+    param(
+        [string]$Algorithm,
+        [string]$RunName,
+        [int]$MaxSteps,
+        [double]$TargetX,
+        [double]$TargetY,
+        [double]$TargetZ
+    )
+
+    $arguments = @(
+        "src\sweep_checkpoints.py",
+        "--algorithm", $Algorithm,
+        "--scenario", $script:ScenarioSlug,
+        "--run-name", $RunName,
+        "--stage1-episodes", $CheckpointSweepStage1Episodes,
+        "--top-k", $CheckpointSweepTopK,
+        "--stage2-episodes", $CheckpointSweepStage2Episodes,
+        "--max-steps", $MaxSteps,
+        "--start-x", $StartX,
+        "--start-y", $StartY,
+        "--start-z", $StartZ,
+        "--target-x", $TargetX,
+        "--target-y", $TargetY,
+        "--target-z", $TargetZ,
+        "--seed", $Seed
+    )
+    Invoke-PythonCommand `
+        -Description "Running two-stage checkpoint selection for $Algorithm run '$RunName'" `
+        -Arguments $arguments
 }
 
 function Assert-CurriculumGate {
@@ -271,13 +309,14 @@ function Assert-CurriculumGate {
         -RunName $gateRunName `
         -ModelPath $ModelPath `
         -Episodes $CurriculumGateEpisodes `
+        -PolicyMode "both" `
         -MaxSteps $MaxSteps `
         -TargetX $TargetX `
         -TargetY $TargetY `
         -TargetZ $TargetZ
 
     $logPath = Join-Path $PSScriptRoot (
-        "experiments\$script:ScenarioSlug\ppo\$gateRunName\results\evaluation_log.csv"
+        "experiments\$script:ScenarioSlug\ppo\$gateRunName\results\evaluation_deterministic_log.csv"
     )
     $rows = @(Import-Csv -LiteralPath $logPath)
     if ($rows.Count -eq 0) {
@@ -331,6 +370,8 @@ function Invoke-PpoTraining {
         "--start-y", $StartY,
         "--start-z", $StartZ,
         "--learning-rate", $LearningRate,
+        "--entropy-coef-start", $PpoEntropyCoefStart,
+        "--entropy-coef-end", $PpoEntropyCoefEnd,
         "--reward-scale", $PpoRewardScale,
         "--value-loss", $PpoValueLoss,
         "--best-window", $PpoBestWindow,
@@ -374,6 +415,17 @@ if ($PpoRolloutSteps -le 0 -or $PpoBatchSize -le 0) {
 }
 if ($PpoRewardScale -le 0 -or $PpoBestWindow -le 0 -or $PpoBestMinEpisodes -le 0) {
     throw "PPO reward scale and best-model window settings must be positive."
+}
+if ($PpoEntropyCoefStart -lt 0 -or $PpoEntropyCoefEnd -lt 0 `
+    -or $PpoEntropyCoefEnd -gt $PpoEntropyCoefStart) {
+    throw "PPO entropy coefficients must satisfy 0 <= end <= start."
+}
+if ($CheckpointSweepStage1Episodes -le 0 -or $CheckpointSweepTopK -le 0 `
+    -or $CheckpointSweepStage2Episodes -le 0) {
+    throw "Checkpoint sweep episode counts and top-k must be positive."
+}
+if ($FinalTestSeedOffset -eq 0) {
+    throw "FinalTestSeedOffset must be non-zero."
 }
 if ($PpoBestMinEpisodes -gt $PpoBestWindow) {
     throw "PpoBestMinEpisodes cannot exceed PpoBestWindow."
@@ -460,6 +512,9 @@ try {
     Write-Host "  Scratch budget:    $FinalTotalSteps"
     Write-Host "  Curriculum budget: $Stage1TotalSteps + $Stage2TotalSteps + $Stage3TotalSteps"
     Write-Host "  PPO stabilisation: reward scale=$PpoRewardScale, value loss=$PpoValueLoss, optimizer reset between stages"
+    Write-Host "  PPO entropy:       $PpoEntropyCoefStart -> $PpoEntropyCoefEnd (linear)"
+    Write-Host "  Checkpoints:       every $CheckpointEverySteps steps"
+    Write-Host "  Selection:         all x $CheckpointSweepStage1Episodes episodes -> top $CheckpointSweepTopK x $CheckpointSweepStage2Episodes"
     Write-Host "  Curriculum gates:  $RequireCurriculumGates"
     Write-Host "  Curriculum stop:   Stage $CurriculumLastStage"
 
@@ -502,6 +557,13 @@ try {
             -Stage "final_33m" `
             -RunName $DqnRun `
             -Arguments $dqnArguments
+        Invoke-CheckpointSweep `
+            -Algorithm "dqn" `
+            -RunName $DqnRun `
+            -MaxSteps $FinalMaxSteps `
+            -TargetX $FinalTargetX `
+            -TargetY $FinalTargetY `
+            -TargetZ $FinalTargetZ
 
         if ($EvaluateAt30000Steps) {
             $checkpoint = "experiments\$ScenarioSlug\dqn\$DqnRun\models\dqn_step_0030000.pt"
@@ -513,6 +575,13 @@ try {
         }
         $finalModel = "experiments\$ScenarioSlug\dqn\$DqnRun\models\dqn_final.pt"
         Invoke-Evaluation -Algorithm "dqn" -RunName $DqnRun -ModelPath $finalModel -Episodes $FinalEvaluationEpisodes
+        $bestModel = "experiments\$ScenarioSlug\dqn\$DqnRun\models\dqn_best_deterministic.pt"
+        Invoke-Evaluation `
+            -Algorithm "dqn" `
+            -RunName "${DqnRun}_deterministic_best" `
+            -ModelPath $bestModel `
+            -Episodes $FinalEvaluationEpisodes `
+            -EvaluationSeed ($Seed + $FinalTestSeedOffset)
     }
 
     if ($RunPpoScratch) {
@@ -526,6 +595,13 @@ try {
             -TargetY $FinalTargetY `
             -TargetZ $FinalTargetZ `
             -LearningRate $PpoScratchLearningRate
+        Invoke-CheckpointSweep `
+            -Algorithm "ppo" `
+            -RunName $PpoScratchRun `
+            -MaxSteps $FinalMaxSteps `
+            -TargetX $FinalTargetX `
+            -TargetY $FinalTargetY `
+            -TargetZ $FinalTargetZ
 
         if ($EvaluateAt30000Steps) {
             $checkpoint = "experiments\$ScenarioSlug\ppo\$PpoScratchRun\models\ppo_step_0030000.pt"
@@ -533,17 +609,25 @@ try {
                 -Algorithm "ppo" `
                 -RunName "${PpoScratchRun}_eval_at_30k" `
                 -ModelPath $checkpoint `
-                -Episodes $IntermediateEvaluationEpisodes
+                -Episodes $IntermediateEvaluationEpisodes `
+                -PolicyMode "both"
         }
         $finalModel = "experiments\$ScenarioSlug\ppo\$PpoScratchRun\models\ppo_final.pt"
-        Invoke-Evaluation -Algorithm "ppo" -RunName $PpoScratchRun -ModelPath $finalModel -Episodes $FinalEvaluationEpisodes
+        Invoke-Evaluation `
+            -Algorithm "ppo" `
+            -RunName $PpoScratchRun `
+            -ModelPath $finalModel `
+            -Episodes $FinalEvaluationEpisodes `
+            -PolicyMode "both"
         if ($EvaluatePpoBestCheckpoints) {
-            $bestModel = "experiments\$ScenarioSlug\ppo\$PpoScratchRun\models\ppo_best.pt"
+            $bestModel = "experiments\$ScenarioSlug\ppo\$PpoScratchRun\models\ppo_best_deterministic.pt"
             Invoke-Evaluation `
                 -Algorithm "ppo" `
-                -RunName "${PpoScratchRun}_best" `
+                -RunName "${PpoScratchRun}_deterministic_best" `
                 -ModelPath $bestModel `
-                -Episodes $FinalEvaluationEpisodes
+                -Episodes $FinalEvaluationEpisodes `
+                -PolicyMode "both" `
+                -EvaluationSeed ($Seed + $FinalTestSeedOffset)
         }
     }
 
@@ -558,9 +642,16 @@ try {
             -TargetY $Stage1TargetY `
             -TargetZ $Stage1TargetZ `
             -LearningRate $PpoStage1LearningRate
+        Invoke-CheckpointSweep `
+            -Algorithm "ppo" `
+            -RunName $PpoStage1Run `
+            -MaxSteps $Stage1MaxSteps `
+            -TargetX $Stage1TargetX `
+            -TargetY $Stage1TargetY `
+            -TargetZ $Stage1TargetZ
 
         $stage1Model = (Resolve-Path -LiteralPath (
-            "experiments\$ScenarioSlug\ppo\$PpoStage1Run\models\ppo_best.pt"
+            "experiments\$ScenarioSlug\ppo\$PpoStage1Run\models\ppo_best_deterministic.pt"
         )).Path
         Assert-CurriculumGate `
             -RunName $PpoStage1Run `
@@ -583,9 +674,16 @@ try {
                 -TargetZ $Stage2TargetZ `
                 -LearningRate $PpoStage2LearningRate `
                 -ResumeModel $stage1Model
+            Invoke-CheckpointSweep `
+                -Algorithm "ppo" `
+                -RunName $PpoStage2Run `
+                -MaxSteps $Stage2MaxSteps `
+                -TargetX $Stage2TargetX `
+                -TargetY $Stage2TargetY `
+                -TargetZ $Stage2TargetZ
 
             $stage2Model = (Resolve-Path -LiteralPath (
-                "experiments\$ScenarioSlug\ppo\$PpoStage2Run\models\ppo_best.pt"
+                "experiments\$ScenarioSlug\ppo\$PpoStage2Run\models\ppo_best_deterministic.pt"
             )).Path
             Assert-CurriculumGate `
                 -RunName $PpoStage2Run `
@@ -608,6 +706,13 @@ try {
                     -TargetZ $FinalTargetZ `
                     -LearningRate $PpoStage3LearningRate `
                     -ResumeModel $stage2Model
+                Invoke-CheckpointSweep `
+                    -Algorithm "ppo" `
+                    -RunName $PpoStage3Run `
+                    -MaxSteps $FinalMaxSteps `
+                    -TargetX $FinalTargetX `
+                    -TargetY $FinalTargetY `
+                    -TargetZ $FinalTargetZ
 
                 if ($EvaluateAt30000Steps) {
                     # The first 15k interactions are in Stages 1 and 2, so 15k into Stage 3 is 30k total.
@@ -616,17 +721,25 @@ try {
                         -Algorithm "ppo" `
                         -RunName "curriculum_33m_45k_seed${Seed}_${RunTagSlug}_eval_at_30k" `
                         -ModelPath $checkpoint `
-                        -Episodes $IntermediateEvaluationEpisodes
+                        -Episodes $IntermediateEvaluationEpisodes `
+                        -PolicyMode "both"
                 }
                 $finalModel = "experiments\$ScenarioSlug\ppo\$PpoStage3Run\models\ppo_final.pt"
-                Invoke-Evaluation -Algorithm "ppo" -RunName $PpoStage3Run -ModelPath $finalModel -Episodes $FinalEvaluationEpisodes
+                Invoke-Evaluation `
+                    -Algorithm "ppo" `
+                    -RunName $PpoStage3Run `
+                    -ModelPath $finalModel `
+                    -Episodes $FinalEvaluationEpisodes `
+                    -PolicyMode "both"
                 if ($EvaluatePpoBestCheckpoints) {
-                    $bestModel = "experiments\$ScenarioSlug\ppo\$PpoStage3Run\models\ppo_best.pt"
+                    $bestModel = "experiments\$ScenarioSlug\ppo\$PpoStage3Run\models\ppo_best_deterministic.pt"
                     Invoke-Evaluation `
                         -Algorithm "ppo" `
-                        -RunName "${PpoStage3Run}_best" `
+                        -RunName "${PpoStage3Run}_deterministic_best" `
                         -ModelPath $bestModel `
-                        -Episodes $FinalEvaluationEpisodes
+                        -Episodes $FinalEvaluationEpisodes `
+                        -PolicyMode "both" `
+                        -EvaluationSeed ($Seed + $FinalTestSeedOffset)
                 }
             }
             else {

@@ -1,0 +1,3 @@
+policy_mode,episodes,success_rate,collision_rate,altitude_violation_rate,unsafe_rate,timeout_rate,average_reward,average_steps,average_final_distance,average_path_length_m,average_min_depth_m
+deterministic,20,1.0,0.0,0.0,0.0,0.0,115.2666758151081,12.0,1.699559371406853,8.350390149893197,1.447216796875
+stochastic,20,0.55,0.3,0.1,0.4,0.05,14.973155130950687,34.0,2.9250063242621005,13.13809579017637,1.29637451171875

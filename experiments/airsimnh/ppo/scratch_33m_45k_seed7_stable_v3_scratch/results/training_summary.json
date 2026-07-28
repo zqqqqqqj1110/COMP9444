@@ -1,0 +1,31 @@
+{
+  "scenario": "airsimnh",
+  "algorithm": "ppo",
+  "run_name": "scratch_33m_45k_seed7_stable_v3_scratch",
+  "status": "completed",
+  "started_at": "2026-07-27T18:24:12",
+  "completed_at": "2026-07-28T00:54:09",
+  "elapsed_seconds": 23396.566,
+  "elapsed_hours": 6.499046,
+  "completed_episodes": 459,
+  "new_environment_interactions": 45000,
+  "agent_cumulative_steps": 45000,
+  "requested_total_steps": 45000,
+  "resume_model": null,
+  "resume_optimizer": false,
+  "entropy_coef_start": 0.01,
+  "entropy_coef_end": 0.001,
+  "entropy_schedule": "linear",
+  "best_model": "experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\ppo_best.pt",
+  "best_window_metrics": {
+    "success_rate": 0.8,
+    "unsafe_rate": 0.0,
+    "mean_final_distance": 2.7074902329325874,
+    "policy_update": 71,
+    "next_optimizer_update": 72,
+    "global_step": 36000,
+    "window_episodes": 20,
+    "saved_before_optimizer_update": true
+  },
+  "training_action_log": "experiments\\airsimnh\\ppo\\scratch_33m_45k_seed7_stable_v3_scratch\\results\\training_action_log.csv"
+}

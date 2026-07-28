@@ -2,18 +2,18 @@
 $Scenario = "AirSimNH"
 $SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
 $Algorithm = "ppo"
-$Model = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\curriculum_stage02_23m_10k_seed7_stable_v2_stage2_pilot\models\ppo_best.pt"
-$PolicyMode = "stochastic"
+$Model = Join-Path $PSScriptRoot "pretrained\airsimnh\ppo_scratch_seed7.pt"
+$PolicyMode = "deterministic"
 $Episodes = 10
 $StopAfterSuccess = $true
-$MaxSteps = 110
-$Seed = 7
+$MaxSteps = 150
+$Seed = 20007
 
 $StartX = 85.413
 $StartY = -15.334
 $StartZ = -3.0
-$TargetX = 107.635
-$TargetY = -10.842
+$TargetX = 117.756
+$TargetY = -19.034
 $TargetZ = -3.0
 
 $CameraName = "0"

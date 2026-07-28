@@ -1,0 +1,22 @@
+{
+  "algorithm": "dqn",
+  "model": "D:\\AirSim\\rl_drone_navigation\\experiments\\airsimnh\\dqn\\scratch_33m_45k_seed7_stable_v3_scratch\\models\\dqn_final.pt",
+  "seed": 7,
+  "requested_policy_mode": "deterministic",
+  "modes": [
+    {
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.0,
+      "collision_rate": 0.92,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.92,
+      "timeout_rate": 0.08,
+      "average_reward": -55.77808360676374,
+      "average_steps": 70.46,
+      "average_final_distance": 7.495104279522079,
+      "average_path_length_m": 33.05755112610218,
+      "average_min_depth_m": 0.3930810546875
+    }
+  ]
+}

@@ -1,33 +1,39 @@
 # Edit only this configuration section for a new PPO experiment.
 $Scenario = "AirSimNH"
 $SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
-$RunName = "stage03_diagonal_10x5m_seed7"
-$ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\stage02_10m_seed7\models\ppo_final.pt"
+$RunName = "curriculum_stage03_33m_30k_seed7_stable_v3_stage3_pilot"
+$ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\curriculum_stage02_23m_10k_seed7_stable_v3_stage2_pilot\models\ppo_best_deterministic.pt"
 $ResumeOptimizer = $false
 
-$Episodes = 250
-$MaxSteps = 200
-$RolloutSteps = 512
-$TargetX = 10.0
-$TargetY = 5.0
+$TotalSteps = 30000
+$Episodes = 100000
+$MaxSteps = 150
+$RolloutSteps = 500
+$TargetX = 117.756
+$TargetY = -19.034
 $TargetZ = -3.0
-$StartX = 0.0
-$StartY = 0.0
+$StartX = 85.413
+$StartY = -15.334
 $StartZ = -3.0
 
 $LearningRate = 7.5e-5
+$EntropyCoefStart = 0.01
+$EntropyCoefEnd = 0.001
 $BatchSize = 64
 $UpdateEpochs = 4
 $RewardScale = 0.1
 $ValueLoss = "huber"
 $BestWindow = 20
 $BestMinEpisodes = 20
-$CheckpointEvery = 10
+$CheckpointEvery = 100000
+$CheckpointEverySteps = 2500
+$CheckpointSweepEpisodes = 5
 $Seed = 7
 
+$RunCheckpointSweep = $true
 $EvaluateAfterTraining = $true
 $EvaluateBestModel = $true
-$EvaluationEpisodes = 20
+$EvaluationEpisodes = 50
 $RunSmokeTest = $true
 $SmokeTestSteps = 3
 
@@ -125,14 +131,23 @@ if ([string]::IsNullOrWhiteSpace($Scenario)) {
 if ([string]::IsNullOrWhiteSpace($RunName)) {
     throw "RunName cannot be empty. Use a descriptive name such as stage01_5m_seed7."
 }
-if ($Episodes -le 0 -or $MaxSteps -le 0 -or $RolloutSteps -le 0) {
-    throw "Episodes, MaxSteps, and RolloutSteps must be positive."
+if ($TotalSteps -le 0 -or $Episodes -le 0 -or $MaxSteps -le 0 -or $RolloutSteps -le 0) {
+    throw "TotalSteps, Episodes, MaxSteps, and RolloutSteps must be positive."
 }
 if ($BatchSize -le 0 -or $BatchSize -gt $RolloutSteps) {
     throw "BatchSize must be positive and no larger than RolloutSteps."
 }
 if ($RewardScale -le 0 -or $BestWindow -le 0 -or $BestMinEpisodes -le 0 -or $BestMinEpisodes -gt $BestWindow) {
     throw "Stable PPO reward scale and best-model window settings are invalid."
+}
+if ($EntropyCoefStart -lt 0 -or $EntropyCoefEnd -lt 0 -or $EntropyCoefEnd -gt $EntropyCoefStart) {
+    throw "Entropy coefficients must satisfy 0 <= end <= start."
+}
+if ($CheckpointEverySteps -le 0 -or $CheckpointSweepEpisodes -le 0) {
+    throw "CheckpointEverySteps and CheckpointSweepEpisodes must be positive."
+}
+if ($TotalSteps % $CheckpointEverySteps -ne 0) {
+    throw "TotalSteps must be divisible by CheckpointEverySteps."
 }
 if ($ValueLoss -notin @("huber", "mse")) {
     throw "ValueLoss must be 'huber' or 'mse'."
@@ -203,10 +218,13 @@ Write-Host "  Resume model:   $resumeModelPath"
 Write-Host "  Resume optimizer: $ResumeOptimizer"
 Write-Host "  Target:         ($TargetX, $TargetY, $TargetZ)"
 Write-Host "  Start:          ($StartX, $StartY, $StartZ)"
-Write-Host "  Episodes:       $Episodes"
+Write-Host "  New step budget: $TotalSteps"
+Write-Host "  Episode cap:    $Episodes"
 Write-Host "  Max steps:      $MaxSteps"
 Write-Host "  Rollout steps:  $RolloutSteps"
 Write-Host "  Learning rate:  $LearningRate"
+Write-Host "  Entropy:        $EntropyCoefStart -> $EntropyCoefEnd (linear)"
+Write-Host "  Checkpoints:    every $CheckpointEverySteps steps"
 Write-Host "  PPO stabilisation: reward scale=$RewardScale, value loss=$ValueLoss"
 Write-Host "  Close scene:    $CloseSceneAfterRun"
 Write-Host "  Output:         $runRoot"
@@ -239,6 +257,7 @@ $trainingArgs = @(
     "--scenario", $scenarioSlug,
     "--run-name", $runSlug,
     "--episodes", $Episodes,
+    "--total-steps", $TotalSteps,
     "--max-steps", $MaxSteps,
     "--rollout-steps", $RolloutSteps,
     "--target-x", $TargetX,
@@ -248,6 +267,8 @@ $trainingArgs = @(
     "--start-y", $StartY,
     "--start-z", $StartZ,
     "--learning-rate", $LearningRate,
+    "--entropy-coef-start", $EntropyCoefStart,
+    "--entropy-coef-end", $EntropyCoefEnd,
     "--reward-scale", $RewardScale,
     "--value-loss", $ValueLoss,
     "--best-window", $BestWindow,
@@ -255,6 +276,7 @@ $trainingArgs = @(
     "--batch-size", $BatchSize,
     "--update-epochs", $UpdateEpochs,
     "--checkpoint-every", $CheckpointEvery,
+    "--checkpoint-every-steps", $CheckpointEverySteps,
     "--seed", $Seed
 )
 
@@ -270,10 +292,36 @@ if ($LASTEXITCODE -ne 0) {
     throw "PPO training failed with exit code $LASTEXITCODE."
 }
 
+if ($RunCheckpointSweep) {
+    Write-Host ""
+    Write-Host "Running deterministic checkpoint sweep..."
+    $sweepArgs = @(
+        "src\sweep_ppo_checkpoints.py",
+        "--scenario", $scenarioSlug,
+        "--run-name", $runSlug,
+        "--episodes", $CheckpointSweepEpisodes,
+        "--max-steps", $MaxSteps,
+        "--target-x", $TargetX,
+        "--target-y", $TargetY,
+        "--target-z", $TargetZ,
+        "--start-x", $StartX,
+        "--start-y", $StartY,
+        "--start-z", $StartZ,
+        "--seed", $Seed
+    )
+    & $PythonExe @sweepArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "PPO checkpoint sweep failed with exit code $LASTEXITCODE."
+    }
+}
+
 if ($EvaluateAfterTraining) {
     Write-Host ""
-    Write-Host "Running $EvaluationEpisodes deterministic evaluation episodes..."
-    $evaluationModel = if ($EvaluateBestModel) {
+    Write-Host "Running $EvaluationEpisodes deterministic and stochastic evaluation episodes..."
+    $evaluationModel = if ($EvaluateBestModel -and $RunCheckpointSweep) {
+        Join-Path $runRoot "models\ppo_best_deterministic.pt"
+    }
+    elseif ($EvaluateBestModel) {
         Join-Path $runRoot "models\ppo_best.pt"
     }
     else {
@@ -285,6 +333,7 @@ if ($EvaluateAfterTraining) {
         "--scenario", $scenarioSlug,
         "--run-name", $runSlug,
         "--model", $evaluationModel,
+        "--policy-mode", "both",
         "--episodes", $EvaluationEpisodes,
         "--max-steps", $MaxSteps,
         "--target-x", $TargetX,

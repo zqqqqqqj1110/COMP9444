@@ -127,6 +127,13 @@ class PPOAgent:
                 action = Categorical(logits=logits).sample()
         return int(action.item())
 
+    def action_probabilities(self, observation: dict[str, np.ndarray]) -> np.ndarray:
+        image, state = self._obs_to_tensors(observation)
+        with torch.no_grad():
+            logits, _ = self.network(image, state)
+            probabilities = torch.softmax(logits, dim=1)
+        return probabilities.squeeze(0).cpu().numpy()
+
     def act(self, observation: dict[str, np.ndarray]) -> dict[str, Any]:
         image, state = self._obs_to_tensors(observation)
         with torch.no_grad():
@@ -134,12 +141,14 @@ class PPOAgent:
             dist = Categorical(logits=logits)
             action = dist.sample()
             log_prob = dist.log_prob(action)
+            probabilities = dist.probs
 
         self.steps_done += 1
         return {
             "action": int(action.item()),
             "log_prob": float(log_prob.item()),
             "value": float(value.item()),
+            "action_probabilities": probabilities.squeeze(0).cpu().numpy(),
         }
 
     def value(self, observation: dict[str, np.ndarray]) -> float:
@@ -257,7 +266,7 @@ class PPOAgent:
         stats.update(self.network.diagnostics(images, states))
         return stats
 
-    def save(self, path: str | Path):
+    def save(self, path: str | Path, checkpoint_metadata: dict[str, Any] | None = None):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(
@@ -266,6 +275,7 @@ class PPOAgent:
                 "optimizer_state_dict": self.optimizer.state_dict(),
                 "steps_done": self.steps_done,
                 "config": self.config.__dict__,
+                "checkpoint_metadata": checkpoint_metadata or {},
             },
             path,
         )
