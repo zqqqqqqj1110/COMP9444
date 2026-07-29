@@ -1,0 +1,3 @@
+DQN Scratch: successes=8/50, Wilson95=[8.3, 28.5]
+PPO Scratch: successes=49/50, Wilson95=[89.5, 99.6]
+PPO Curriculum: successes=34/50, Wilson95=[54.2, 79.2]

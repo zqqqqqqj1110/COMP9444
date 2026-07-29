@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "checkedAt": "2026-07-29T08:57:14.457Z",
+  "workspace": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation",
+  "finalPptx": "D:\\AirSim\\rl_drone_navigation\\COMP9444_Presentation_Autonomous_Drone_Navigation.pptx",
+  "starterPptx": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation\\template-starter.pptx",
+  "mapPath": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation\\template-frame-map.json",
+  "starterLayoutDir": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation\\template-starter-layout",
+  "finalLayoutDir": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation\\final-render",
+  "editDir": "D:\\AirSim\\rl_drone_navigation\\tmp\\deliverables\\presentation",
+  "issueCount": 0,
+  "issues": []
+}

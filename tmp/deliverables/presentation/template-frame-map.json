@@ -1,0 +1,206 @@
+{
+  "outputSlides": [
+    {
+      "outputSlide": 1,
+      "sourceSlide": 1,
+      "narrativeRole": "opening title",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/547294r6"},
+        {"action": "rewrite", "shapeId": "sh/k3yl0zql"},
+        {"action": "replace", "shapeId": "im/qh0jmhw7"},
+        {"action": "replace", "shapeId": "im/ri9kvmxs"}
+      ]
+    },
+    {
+      "outputSlide": 2,
+      "sourceSlide": 2,
+      "narrativeRole": "motivation and problem",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/9072xkry"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/ozy1ofad"},
+        {"action": "rewrite", "shapeId": "sh/b29kza94"},
+        {"action": "rewrite", "shapeId": "sh/a10jqpsj"},
+        {"action": "rewrite-and-reposition", "shapeId": "im/8fa1g3ix"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 552, "top": 321, "width": 704, "height": 297},
+          "reason": "Add a slide-local AirSim frame because duplicated inherited image relationships are shared.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 3,
+      "sourceSlide": 4,
+      "narrativeRole": "literature review AirSim and DQN",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/1cj2d8b6"},
+        {"action": "rewrite", "shapeId": "sh/0ba143al"},
+        {"action": "rewrite", "shapeId": "sh/rm1k7yt4"},
+        {"action": "rewrite", "shapeId": "sh/ql8jytsj"}
+      ]
+    },
+    {
+      "outputSlide": 4,
+      "sourceSlide": 4,
+      "narrativeRole": "literature review PPO and curriculum",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/1cj2d8b6"},
+        {"action": "rewrite", "shapeId": "sh/0ba143al"},
+        {"action": "rewrite", "shapeId": "sh/rm1k7yt4"},
+        {"action": "rewrite", "shapeId": "sh/ql8jytsj"}
+      ]
+    },
+    {
+      "outputSlide": 5,
+      "sourceSlide": 2,
+      "narrativeRole": "RL task and online observations",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/9072xkry"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/ozy1ofad"},
+        {"action": "rewrite", "shapeId": "sh/b29kza94"},
+        {"action": "rewrite", "shapeId": "sh/a10jqpsj"},
+        {"action": "rewrite-and-reposition", "shapeId": "im/8fa1g3ix"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 552, "top": 321, "width": 704, "height": 297},
+          "reason": "Add a slide-local AirSim observation because duplicated inherited image relationships are shared.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 6,
+      "sourceSlide": 7,
+      "narrativeRole": "shared model architecture",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/cb2tkvap"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/dcbud0ra"},
+        {"action": "rewrite", "shapeId": "sh/ydkbm5sv"},
+        {"action": "rewrite", "shapeId": "sh/kzmdova1"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 690, "top": 155, "width": 520, "height": 430},
+          "reason": "Add one editable architecture diagram after narrowing the inherited text placeholder.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 7,
+      "sourceSlide": 6,
+      "narrativeRole": "controlled experimental protocol",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/yhg7epsj"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/zi98nu94"},
+        {"action": "rewrite", "shapeId": "sh/87ipkzal"},
+        {"action": "rewrite", "shapeId": "sh/ml07i9sv"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 700, "top": 170, "width": 480, "height": 390},
+          "reason": "Add one editable checkpoint-selection flow after narrowing the inherited text placeholder.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 8,
+      "sourceSlide": 2,
+      "narrativeRole": "training behaviour",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/9072xkry"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/ozy1ofad"},
+        {"action": "rewrite", "shapeId": "sh/b29kza94"},
+        {"action": "rewrite", "shapeId": "sh/a10jqpsj"},
+        {"action": "rewrite-and-reposition", "shapeId": "im/8fa1g3ix"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 552, "top": 321, "width": 704, "height": 297},
+          "reason": "Add a slide-local training chart because duplicated inherited image relationships are shared.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 9,
+      "sourceSlide": 8,
+      "narrativeRole": "primary deterministic results",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/18byd4zy"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/g72x4zyd"},
+        {"action": "rewrite", "shapeId": "sh/ri9g7uhw"},
+        {"action": "rewrite", "shapeId": "sh/tkby9kzm"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 645, "top": 155, "width": 590, "height": 435},
+          "reason": "Add one editable grouped bar chart after narrowing the inherited result summary placeholder.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 10,
+      "sourceSlide": 2,
+      "narrativeRole": "error analysis and policy modes",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/9072xkry"},
+        {"action": "rewrite-and-reposition", "shapeId": "sh/ozy1ofad"},
+        {"action": "rewrite", "shapeId": "sh/b29kza94"},
+        {"action": "rewrite", "shapeId": "sh/a10jqpsj"},
+        {"action": "rewrite-and-reposition", "shapeId": "im/8fa1g3ix"},
+        {
+          "action": "add",
+          "newPrimitiveAllowed": true,
+          "zone": {"left": 552, "top": 321, "width": 704, "height": 297},
+          "reason": "Add a slide-local trajectory chart because duplicated inherited image relationships are shared.",
+          "mustNotOverlapInherited": true
+        }
+      ]
+    },
+    {
+      "outputSlide": 11,
+      "sourceSlide": 10,
+      "narrativeRole": "discussion conclusion and future work",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/xc3mho32"},
+        {"action": "rewrite", "shapeId": "sh/cbu58j2h"},
+        {"action": "rewrite", "shapeId": "sh/zelojyl8"},
+        {"action": "rewrite", "shapeId": "sh/l036l83y"}
+      ]
+    },
+    {
+      "outputSlide": 12,
+      "sourceSlide": 11,
+      "narrativeRole": "questions close",
+      "reuseMode": "duplicate-slide",
+      "editTargets": [
+        {"action": "rewrite", "shapeId": "sh/xcryxg7y"},
+        {"action": "rewrite", "shapeId": "sh/n69grmpw"},
+        {"action": "delete", "shapeId": "sh/72t03qp0"},
+        {"action": "replace", "shapeId": "im/nml0bqh8"}
+      ]
+    }
+  ],
+  "omittedSourceSlides": [
+    {"sourceSlide": 3, "reason": "Problem statement is combined with motivation to avoid repetition."},
+    {"sourceSlide": 5, "reason": "The visual source-slide pattern better supports the online RL task explanation."},
+    {"sourceSlide": 9, "reason": "Error analysis uses the visual source-slide pattern with a trajectory figure."}
+  ]
+}

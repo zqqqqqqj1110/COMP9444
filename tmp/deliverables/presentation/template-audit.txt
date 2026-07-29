@@ -1,0 +1,9 @@
+Source deck: COMP9444_Presentation_TeamName.pptx, 11 slides, 16:9.
+Visual system: white canvas, black Calibri/Arial text, yellow UNSW footer band, UNSW logo at lower right, large left-aligned titles.
+Reusable patterns:
+- Slide 1: branded title slide with yellow left rail and two image slots.
+- Slide 2: title, full body placeholder, one large image, presenter footer.
+- Slides 3-10: title, full body placeholder, slide number, presenter footer.
+- Slide 11: questions image, slide number, license footer, empty title placeholder.
+Insertion contract: duplicate source slides; rewrite inherited title/body/footer/slide-number objects; replace inherited image objects where available; allow bounded new editable charts or diagrams only when the inherited body placeholder is repositioned or deleted.
+Typography and master hierarchy must remain inherited. Every structural placeholder must be filled, rewritten, or deleted.

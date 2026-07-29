@@ -1,0 +1,56 @@
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"Project Title","textShapes":2}
+{"kind":"textbox","id":"sh/547294r6","slide":1,"name":"TextBox 1","text":"Project Title","textPreview":"Project Title","textChars":13,"textLines":1,"bbox":[-8.24,234.76,590.29,87.24]}
+{"kind":"textbox","id":"sh/k3yl0zql","slide":1,"name":"TextBox 2","text":"Team Name\n\nAlan Blair (zxxxxxxx)\nFatemeh Morgani (zxxxxxxx)\nHao Xue (zxxxxxxx)\nJingying Gao (zxxxxxxx)\nZahra Donyavi (zxxxxxxx)","textPreview":"Team Name |  | Alan Blair (zxxxxxxx) | Fatemeh Morgani (zxxxxxxx) | Hao Xue (zxxxxxxx) | Jingying Gao (zxxxxxxx) | Zahra Donyavi (zxxxxxxx)","textChars":127,"textLines":7,"bbox":[585.28,269.02,696.9,365.13]}
+{"kind":"image","id":"im/qh0jmhw7","slide":1,"name":"Picture 5","bbox":[582.05,0,351.69,239.38]}
+{"kind":"image","id":"im/ri9kvmxs","slide":1,"name":"Picture 6","bbox":[933.74,0,345.22,239.38]}
+{"kind":"slide","id":"sl/hwbqtkby","slide":2,"title":"Motivation","textShapes":4}
+{"kind":"textbox","id":"sh/9072xkry","slide":2,"name":"Title 1","placeholder":"title","text":"Motivation ","textPreview":"Motivation","textChars":11,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/ozy1ofad","slide":2,"name":"Content Placeholder 2","text":" This is just an example, please change images and content as per the project. Also, change Presenter’s name and zID for the final project presentation\nImage Segmentation: Identifying which image pixels belong to an object\n One of the core tasks in computer vision\n Broad array of applications:\n Medical Image Analysis \n Scientific imagery \n Editing photos\n Autonomous Vehicles\n Robotics\n Agriculture \n …\n","textPreview":"This is just an example, please change images and content as per the project. Also, change Presenter’s name and zID for the final project...","textChars":405,"textLines":12,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/b29kza94","slide":2,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/a10jqpsj","slide":2,"name":"TextBox 4","text":"Presenter: Alan Blair (zxxxxxxx)","textPreview":"Presenter: Alan Blair (zxxxxxxx)","textChars":32,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"image","id":"im/8fa1g3ix","slide":2,"name":"Picture 6","bbox":[551.57,320.55,704.11,297.05]}
+{"kind":"slide","id":"sl/ofy9wn61","slide":3,"title":"Problem Statement","textShapes":4}
+{"kind":"textbox","id":"sh/cza94vmx","slide":3,"name":"Title 1","placeholder":"title","text":"Problem Statement","textPreview":"Problem Statement","textChars":17,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/d0jax03i","slide":3,"name":"Content Placeholder 2","text":" Write here ","textPreview":"Write here","textChars":12,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/298ryl4v","slide":3,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/3ah8rqlg","slide":3,"name":"TextBox 4","text":"Presenter: Alan Blair (zxxxxxxx)","textPreview":"Presenter: Alan Blair (zxxxxxxx)","textChars":32,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/jyx0ra1s","slide":4,"title":"Literature Review","textShapes":4}
+{"kind":"textbox","id":"sh/1cj2d8b6","slide":4,"name":"Title 1","placeholder":"title","text":"Literature Review","textPreview":"Literature Review","textChars":17,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/0ba143al","slide":4,"name":"Content Placeholder 2","text":" Just provide summary in 2 slides of relevant papers","textPreview":"Just provide summary in 2 slides of relevant papers","textChars":52,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/rm1k7yt4","slide":4,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ql8jytsj","slide":4,"name":"TextBox 4","text":"Presenter: Fatemeh Morgani (zxxxxxxx)","textPreview":"Presenter: Fatemeh Morgani (zxxxxxxx)","textChars":37,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/i107q5of","slide":5,"title":"Dataset(s)","textShapes":4}
+{"kind":"textbox","id":"sh/dgbulwnm","slide":5,"name":"Title 1","placeholder":"title","text":"Dataset(s)","textPreview":"Dataset(s)","textChars":10,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/cf2tcr61","slide":5,"name":"Content Placeholder 2","text":" Provide details about the dataset or the RL tasks","textPreview":"Provide details about the dataset or the RL tasks","textChars":50,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/z2tcnm5s","slide":5,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/yhkbe1o7","slide":5,"name":"TextBox 4","text":"Presenter: Hao Xue (zxxxxxxx)","textPreview":"Presenter: Hao Xue (zxxxxxxx)","textChars":29,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/x8f69ofe","slide":6,"title":"Data Analysis","textShapes":4}
+{"kind":"textbox","id":"sh/yhg7epsj","slide":6,"name":"Title 1","placeholder":"title","text":"Data Analysis","textPreview":"Data Analysis","textChars":13,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/zi98nu94","slide":6,"name":"Content Placeholder 2","text":" Briefly provide details here …","textPreview":"Briefly provide details here …","textChars":31,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/87ipkzal","slide":6,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ml07i9sv","slide":6,"name":"TextBox 5","text":"Presenter: Hao Xue (zxxxxxxx)","textPreview":"Presenter: Hao Xue (zxxxxxxx)","textChars":29,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/gnmp4jqx","slide":7,"title":"Method(s)","textShapes":4}
+{"kind":"textbox","id":"sh/cb2tkvap","slide":7,"name":"Title 1","placeholder":"title","text":"Method(s)","textPreview":"Method(s)","textChars":9,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/dcbud0ra","slide":7,"name":"Content Placeholder 2","text":" Details here …","textPreview":"Details here …","textChars":15,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/ydkbm5sv","slide":7,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/kzmdova1","slide":7,"name":"TextBox 5","text":"Presenter: Jingying Gao (zxxxxxxx)","textPreview":"Presenter: Jingying Gao (zxxxxxxx)","textChars":34,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/fu1gfa1s","slide":8,"title":"Results","textShapes":4}
+{"kind":"textbox","id":"sh/18byd4zy","slide":8,"name":"Title 1","placeholder":"title","text":"Results","textPreview":"Results","textChars":7,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/g72x4zyd","slide":8,"name":"Content Placeholder 2","text":" Details here …","textPreview":"Details here …","textChars":15,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/ri9g7uhw","slide":8,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/tkby9kzm","slide":8,"name":"TextBox 5","text":"Presenter: Zahra Donyavi (zxxxxxxx)","textPreview":"Presenter: Zahra Donyavi (zxxxxxxx)","textChars":35,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/udsvah03","slide":9,"title":"Discussion","textShapes":4}
+{"kind":"textbox","id":"sh/1cfmhgne","slide":9,"name":"Title 1","placeholder":"title","text":"Discussion","textPreview":"Discussion","textChars":10,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/0b65obm9","slide":9,"name":"Content Placeholder 2","text":" Details here …","textPreview":"Details here …","textChars":15,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/nex4jq5k","slide":9,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/9gzml0nq","slide":9,"name":"TextBox 5","text":"Presenter: Zahra Donyavi (zxxxxxxx)","textPreview":"Presenter: Zahra Donyavi (zxxxxxxx)","textChars":35,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/m90b6t0r","slide":10,"title":"Conclusion","textShapes":4}
+{"kind":"textbox","id":"sh/xc3mho32","slide":10,"name":"Title 1","placeholder":"title","text":"Conclusion","textPreview":"Conclusion","textChars":10,"textLines":1,"bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/cbu58j2h","slide":10,"name":"Content Placeholder 2","text":" Write here","textPreview":"Write here","textChars":11,"textLines":1,"bbox":[24.32,102.4,1221.12,528.64]}
+{"kind":"textbox","id":"sh/zelojyl8","slide":10,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/l036l83y","slide":10,"name":"TextBox 5","text":"Presenter: Zahra Donyavi (zxxxxxxx)","textPreview":"Presenter: Zahra Donyavi (zxxxxxxx)","textChars":35,"textLines":1,"bbox":[12.57,653.6,769.14,27.47]}
+{"kind":"slide","id":"sl/jetc3ut0","slide":11,"title":"11","textShapes":2}
+{"kind":"shape","id":"sh/xcryxg7y","slide":11,"name":"Title 1","placeholder":"title","bbox":[24.32,14.33,1221.12,88.07]}
+{"kind":"textbox","id":"sh/n69grmpw","slide":11,"name":"Slide Number Placeholder 3","placeholder":"slideNumber","text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/72t03qp0","slide":11,"name":"TextBox 7","text":"This Photo by Unknown Author is licensed under CC BY-SA","textPreview":"This Photo by Unknown Author is licensed under CC BY-SA","textChars":55,"textLines":1,"bbox":[38.68,662.27,703.97,24.23]}
+{"kind":"image","id":"im/nml0bqh8","slide":11,"name":"Content Placeholder 6","bbox":[237.92,129.51,703.97,481.81]}
