@@ -1,5 +1,8 @@
 __pycache__/
 *.py[cod]
+.venv/
+.local/
+docs/EXPERIMENT_TEST_SUMMARY.md
 
 # Generated AirSim artifacts that are too large for the source repository.
 experiments/**/*.pt
@@ -7,3 +10,10 @@ experiments/**/recordings/
 experiments/**/results/training_action_log.csv
 experiments/**/results/*_trajectory.csv
 experiments/**/results/checkpoint_sweep*_episodes.csv
+
+# Large generalization-test artifacts; keep routes, scripts, and summaries tracked.
+generalization_tests/**/videos/**/*.mp4
+generalization_tests/**/metrics/**/evaluation_trajectory.csv
+generalization_tests/**/metrics/**/evaluation_deterministic_trajectory.csv
+generalization_tests/**/results/**/evaluation_trajectory.csv
+generalization_tests/**/results/**/evaluation_deterministic_trajectory.csv

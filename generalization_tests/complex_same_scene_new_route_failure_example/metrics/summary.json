@@ -1,0 +1,56 @@
+{
+  "route": {
+    "name": "complex_same_scene_new_route_failure_example",
+    "description": "Complex same-map route selected as a PPO Scratch generalization failure example",
+    "start": {
+      "x": 11.178834915161133,
+      "y": 34.49273681640625,
+      "z": -3.0
+    },
+    "target": {
+      "x": 37.0,
+      "y": 34.0,
+      "z": -3.0
+    },
+    "reference_start": {
+      "x": 11.178834915161133,
+      "y": 45.49273681640625,
+      "z": -3.0
+    },
+    "reference_target": {
+      "x": 45.0,
+      "y": 48.0,
+      "z": -3.0
+    },
+    "start_offset": {
+      "x": 0.0,
+      "y": -11.0,
+      "z": 0.0
+    },
+    "target_offset": {
+      "x": -8.0,
+      "y": -14.0,
+      "z": 0.0
+    },
+    "straight_line_distance_m": 25.825866024370683,
+    "max_steps": 150,
+    "goal_radius_m": 2.0,
+    "intended_role": "complex same-scene unseen-route failure example"
+  },
+  "model": {
+    "route": "complex_same_scene_new_route_failure_example",
+    "model": "ppo_scratch",
+    "policy_mode": "deterministic",
+    "episodes": 50,
+    "success_rate": 0.0,
+    "collision_rate": 0.78,
+    "altitude_violation_rate": 0.0,
+    "unsafe_rate": 0.78,
+    "timeout_rate": 0.22,
+    "average_reward": -99.21366623187527,
+    "average_steps": 63.16,
+    "average_final_distance": 25.24172059313145,
+    "average_path_length_m": 36.99846785431387,
+    "average_min_depth_m": 0.18571533203125
+  }
+}

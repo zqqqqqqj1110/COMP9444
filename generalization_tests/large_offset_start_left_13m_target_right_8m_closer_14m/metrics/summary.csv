@@ -1,0 +1,2 @@
+route,model,policy_mode,episodes,success_rate,collision_rate,altitude_violation_rate,unsafe_rate,timeout_rate,average_reward,average_steps,average_final_distance,average_path_length_m,average_min_depth_m
+original_route_large_offset_start_left_13m_target_right_8m_closer_14m,ppo_scratch,deterministic,50,1.0,0.0,0.0,0.0,0.0,139.63958732471002,44.92,1.44724156942009,33.05607278169968,0.17322998046875

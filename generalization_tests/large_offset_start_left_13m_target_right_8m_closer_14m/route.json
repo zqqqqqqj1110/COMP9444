@@ -1,0 +1,14 @@
+{
+  "name": "original_route_large_offset_start_left_13m_target_right_8m_closer_14m",
+  "description": "Based on the reachable candidate: start shifted an additional 5 m left; target unchanged",
+  "start": {"x": 85.413, "y": -28.334, "z": -3.0},
+  "target": {"x": 103.756, "y": -11.034, "z": -3.0},
+  "reference_start": {"x": 85.413, "y": -15.334, "z": -3.0},
+  "reference_target": {"x": 117.756, "y": -19.034, "z": -3.0},
+  "start_offset": {"x": 0.0, "y": -13.0, "z": 0.0},
+  "target_offset": {"x": -14.0, "y": 8.0, "z": 0.0},
+  "straight_line_distance_m": 25.21419543091585,
+  "max_steps": 150,
+  "goal_radius_m": 2.0,
+  "based_on": "large_offset_start_left_8m_target_right_8m_closer_14m"
+}

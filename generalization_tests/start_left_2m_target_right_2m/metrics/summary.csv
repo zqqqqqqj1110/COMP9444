@@ -1,0 +1,4 @@
+route,model,policy_mode,episodes,success_rate,collision_rate,altitude_violation_rate,unsafe_rate,timeout_rate,average_reward,average_steps,average_final_distance,average_path_length_m,average_min_depth_m
+original_route_start_left_2m_target_right_2m,dqn_scratch,deterministic,50,0.0,0.32,0.0,0.32,0.68,-15.011910525567647,121.82,8.523759838894076,46.11062066884389,0.109556884765625
+original_route_start_left_2m_target_right_2m,ppo_scratch,deterministic,50,1.0,0.0,0.0,0.0,0.0,156.37105402652642,50.7,1.7644512420632947,35.538626114057635,0.18634765625
+original_route_start_left_2m_target_right_2m,ppo_curriculum,deterministic,50,0.36,0.64,0.0,0.64,0.0,25.347718553117385,53.56,2.1407374557748575,36.83066572934462,0.18604248046875

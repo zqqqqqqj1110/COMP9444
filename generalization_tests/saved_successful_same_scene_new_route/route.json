@@ -1,0 +1,11 @@
+{
+  "name": "saved_successful_same_scene_new_route",
+  "description": "Successful unseen route at a different location in the AirSimNH map",
+  "start": {"x": 11.178834915161133, "y": 45.49273681640625, "z": -3.0},
+  "target": {"x": 45.0, "y": 48.0, "z": -3.0},
+  "straight_line_distance_m": 33.9139731728344,
+  "historical_preview_episodes": 2,
+  "historical_preview_successes": 2,
+  "max_steps": 150,
+  "goal_radius_m": 2.0
+}

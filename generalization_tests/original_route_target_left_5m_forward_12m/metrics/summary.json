@@ -1,0 +1,55 @@
+{
+  "route": {
+    "name": "original_route_target_left_5m_forward_12m",
+    "description": "Original start with target shifted 5 m left (-y) and 12 m forward (+x)",
+    "start": {
+      "x": 85.413,
+      "y": -15.334,
+      "z": -3.0
+    },
+    "target": {
+      "x": 129.756,
+      "y": -24.034,
+      "z": -3.0
+    },
+    "reference_start": {
+      "x": 85.413,
+      "y": -15.334,
+      "z": -3.0
+    },
+    "reference_target": {
+      "x": 117.756,
+      "y": -19.034,
+      "z": -3.0
+    },
+    "start_offset": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "target_offset": {
+      "x": 12.0,
+      "y": -5.0,
+      "z": 0.0
+    },
+    "straight_line_distance_m": 45.18840171083725,
+    "max_steps": 150,
+    "goal_radius_m": 2.0
+  },
+  "model": {
+    "route": "original_route_target_left_5m_forward_12m",
+    "model": "ppo_scratch",
+    "policy_mode": "deterministic",
+    "episodes": 50,
+    "success_rate": 0.0,
+    "collision_rate": 0.14,
+    "altitude_violation_rate": 0.0,
+    "unsafe_rate": 0.14,
+    "timeout_rate": 0.86,
+    "average_reward": -6.560547241433616,
+    "average_steps": 132.36,
+    "average_final_distance": 10.03154954041193,
+    "average_path_length_m": 53.72062727179593,
+    "average_min_depth_m": 0.287861328125
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "complex_same_scene_new_route_failure_example",
+  "description": "Complex same-map route selected as a PPO Scratch generalization failure example",
+  "start": {"x": 11.178834915161133, "y": 34.49273681640625, "z": -3.0},
+  "target": {"x": 37.0, "y": 34.0, "z": -3.0},
+  "reference_start": {"x": 11.178834915161133, "y": 45.49273681640625, "z": -3.0},
+  "reference_target": {"x": 45.0, "y": 48.0, "z": -3.0},
+  "start_offset": {"x": 0.0, "y": -11.0, "z": 0.0},
+  "target_offset": {"x": -8.0, "y": -14.0, "z": 0.0},
+  "straight_line_distance_m": 25.825866024370683,
+  "max_steps": 150,
+  "goal_radius_m": 2.0,
+  "intended_role": "complex same-scene unseen-route failure example"
+}
