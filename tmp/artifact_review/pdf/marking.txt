@@ -1,0 +1,159 @@
+Total Marks: 27+3                                      15 marks
+                                                       5 marks
+· Project Notebook                                     7 marks
+· Summary Report (max 4 pages, excl. references)       3 marks
+· Project Presentation
+· Group Class Participation
+
+1. Project Notebook                                                 Marks
+
+    Component breakdown                                                    1
+                                                                           1
+    Criterion                                                              3
+                                                                           3
+    Introduction, Motivation and/or Problem Statement                      3
+    Data Sources or RL Tasks                                               2
+    Exploratory Analysis of Data or RL Tasks                               2
+    Models and/or Methods
+    Results                                                               15
+    Discussion
+    Writing
+
+    Total
+
+Introduction, Motivation and/or Problem Statement                   1 mark
+   Clearly define the problem statement or purpose of the project.
+
+Data Sources or RL Tasks                                            1 mark
+
+Data sources or reinforcement learning tasks are clearly documented and described.
+
+Exploratory Analysis of Data or RL Tasks                            3 marks
+
+Provide details about the properties, number of classes, pre-processing, and challeng-
+ing aspects of the data (or the RL task).
+
+Models and/or Methods                                               3 marks
+
+Model(s) and/or method(s) are judiciously chosen and appropriately applied. If
+building on previous work, identify the source and clearly delineate which parts are
+your own work.
+
+COMP9444 ­ Neural Networks and Deep Learning                                            1
+Results                                                         3 marks
+
+Results are clearly shown, discussed, and evaluated using appropriate metrics. Good
+use of graphs or other visualisations where possible. Comparison with previous
+methods / state-of-the-art where appropriate.
+
+Discussion                                                      2 marks
+
+Discuss the results and analysis, provide insight about system performance, including
+strengths, weaknesses, limitations, and possible future work.
+
+Writing                                                         2 marks
+
+Notebook is presented in a readable format. Appropriate section/subsection headings
+are provided in markdown format. Codebase is easy to follow.
+
+Important: Do NOT submit multiple notebooks. Aggregate all your work into
+                                            a single notebook.
+
+2. Project Summary Report                                       Marks
+
+    Component breakdown                                              0.5
+                                                                     0.5
+    Criterion                                                        0.5
+                                                                     0.5
+    Introduction                                                     0.5
+    Literature Review                                                0.5
+    Models and/or Methods
+    Experimental Setup                                                 1
+    Results                                                            1
+    Conclusions
+    Details in the report                                              5
+    Overall quality of the report
+
+    Total
+
+Introduction                                                    0.5 marks
+   Provide a high-level description of the project.
+
+Literature Review                                               0.5 marks
+   Review existing methods/techniques relevant to the project.
+
+Models and/or Methods                                           0.5 marks
+
+Justify and explain the selection of models and/or methods appropriate to the task.
+
+Experimental Setup                                              0.5 marks
+
+COMP9444 ­ Neural Networks and Deep Learning                                           2
+Provide clear details about model parameters, evaluation metrics, and data split into
+training, validation, and testing sets.
+
+Results                                                                   0.5 marks
+
+Discuss the main findings and results. How well does the system perform? Compare
+to other methods/SOTA if possible.
+
+Conclusions                                                               0.5 marks
+
+What are the key strengths and weaknesses of the proposed solution? What are the
+key limitations? Recommendations for future work.
+
+Details in the Report                                                     1 mark
+
+Report provides sufficient details to understand the project clearly: motivation,
+dataset, rationale for model selection, results, and conclusions.
+
+Overall Quality of the Report                                             1 mark
+
+Summary report is well-presented and formatted, within the specified length, without
+grammatical mistakes or typos.
+
+3. Project Presentation                                                   Marks
+
+    Component breakdown                                                          1
+                                                                                 1
+    Criterion
+                                                                                 1
+    Individual-based                                                             1
+       Contribution to the presentation                                          1
+       Clearly spoken and understandable                                         1
+                                                                                 1
+    Group-based                                                                  7
+       Clear problem statement
+       Clear presentation of data / data exploration or RL task
+       Clear presentation of models and/or methods
+       Clear presentation of results, result analysis, or error analysis
+       Quality of slides or visual presentation material
+
+    Total
+
+Individual-based criteria (2 marks total per student)
+Each student is assessed individually on their visible contribution to the presentation
+and on the clarity of their communication during their speaking component.
+
+    Group-based criteria (5 marks shared)
+The remaining marks are awarded to the group as a whole based on the quality and
+clarity of the overall presentation content and visual materials.
+
+COMP9444 ­ Neural Networks and Deep Learning                                             3
+4. Project Session Participation              Marks
+
+    Component breakdown                              3
+    Criterion                                        3
+    Individual-based
+
+       Group project sessions participation
+    Total
+
+Project Session Participation                 3 marks
+
+Participation in group monitoring sessions (week 7­week 10) will be taken into
+account. There will be three monitoring sessions in total, contributing up to 3 marks
+individually.
+
+COMP9444 ­ Neural Networks and Deep Learning                                           4
+

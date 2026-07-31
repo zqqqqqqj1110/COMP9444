@@ -1,0 +1,645 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/t2f18f",
+    "id": "t2f18f",
+    "slide": 1,
+    "layoutId": "/ppt/slideLayouts/slideLayout13.xml",
+    "layoutName": "1_Two Content",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "Office",
+    "colors": {
+      "accent1": "#4472C4",
+      "accent2": "#ED7D31",
+      "accent3": "#A5A5A5",
+      "accent4": "#FFC000",
+      "accent5": "#5B9BD5",
+      "accent6": "#70AD47",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#44546A",
+      "lt2": "#E7E6E6",
+      "hlink": "#0563C1",
+      "folHlink": "#954F72"
+    },
+    "fontScheme": {
+      "name": "Office",
+      "majorFont": {
+        "latinTypeface": "Calibri Light"
+      },
+      "minorFont": {
+        "latinTypeface": "Calibri"
+      }
+    },
+    "typefaces": [
+      "Arial",
+      "Calibri",
+      "Calibri Light"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout13.xml",
+      "name": "1_Two Content",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout13.xml/8",
+          "id": "8",
+          "name": "Rectangle 7",
+          "bbox": [
+            0,
+            0,
+            582,
+            720
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle"
+          },
+          "fillColor": "#FFDC00",
+          "lineWidth": 0
+        },
+        {
+          "order": 2,
+          "kind": "image",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout13.xml/9",
+          "id": "9",
+          "name": "Picture 8",
+          "bbox": [
+            135.65,
+            -64.32,
+            539.11,
+            735.15
+          ],
+          "rotation": 50,
+          "contentType": "image/x-emf",
+          "asset": {
+            "assetId": "/ppt/media/image2.emf",
+            "contentType": "image/x-emf",
+            "byteLength": 914468
+          },
+          "fillImage": {
+            "assetId": "/ppt/media/image2.emf",
+            "contentType": "image/x-emf",
+            "byteLength": 914468
+          }
+        },
+        {
+          "order": 3,
+          "kind": "image",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout13.xml/10",
+          "id": "10",
+          "name": "Picture 10",
+          "bbox": [
+            43.58,
+            503.18,
+            184.84,
+            193.41
+          ],
+          "contentType": "image/x-emf",
+          "asset": {
+            "assetId": "/ppt/media/image3.emf",
+            "contentType": "image/x-emf",
+            "byteLength": 544788
+          },
+          "fillImage": {
+            "assetId": "/ppt/media/image3.emf",
+            "contentType": "image/x-emf",
+            "byteLength": 544788
+          }
+        }
+      ]
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "type": "master",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/2",
+          "id": "2",
+          "name": "Title Placeholder 1",
+          "bbox": [
+            88,
+            38.33,
+            1104,
+            139.17
+          ],
+          "geometry": "rect",
+          "text": "Click to edit Master title style",
+          "textPreview": "Click to edit Master title style",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "vertical": 1,
+            "verticalAlignment": "middle",
+            "autoFit": "shrinkText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Click to edit Master title style",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Click to edit Master title style"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/3",
+          "id": "3",
+          "name": "Text Placeholder 2",
+          "bbox": [
+            88,
+            191.67,
+            1104,
+            456.83
+          ],
+          "geometry": "rect",
+          "text": "Click to edit Master text styles\nSecond level\nThird level\nFourth level\nFifth level",
+          "textPreview": "Click to edit Master text styles | Second level | Third level | Fourth level | Fifth level",
+          "resolvedTextStyle": {
+            "vertical": 1,
+            "autoFit": "shrinkText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Click to edit Master text styles",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Click to edit Master text styles"
+                }
+              ]
+            },
+            {
+              "index": 2,
+              "text": "Second level",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Second level"
+                }
+              ]
+            },
+            {
+              "index": 3,
+              "text": "Third level",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Third level"
+                }
+              ]
+            },
+            {
+              "index": 4,
+              "text": "Fourth level",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Fourth level"
+                }
+              ]
+            },
+            {
+              "index": 5,
+              "text": "Fifth level",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Fifth level"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/4",
+          "id": "4",
+          "name": "Date Placeholder 3",
+          "bbox": [
+            88,
+            667.33,
+            288,
+            38.33
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "vertical": 1,
+            "verticalAlignment": "middle",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            }
+          }
+        },
+        {
+          "order": 4,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/5",
+          "id": "5",
+          "name": "Footer Placeholder 4",
+          "bbox": [
+            424,
+            667.33,
+            432,
+            38.33
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "vertical": 1,
+            "verticalAlignment": "middle",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            }
+          }
+        },
+        {
+          "order": 5,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/6",
+          "id": "6",
+          "name": "Slide Number Placeholder 5",
+          "bbox": [
+            904,
+            667.33,
+            288,
+            38.33
+          ],
+          "geometry": "rect",
+          "text": "‹#›",
+          "textPreview": "‹#›",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "vertical": 1,
+            "verticalAlignment": "middle",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "‹#›",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "‹#›"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6107apgn",
+      "id": "2",
+      "name": "TextBox 1",
+      "bbox": [
+        -8.24,
+        234.76,
+        590.29,
+        87.24
+      ],
+      "geometry": "rect",
+      "text": "Project Title",
+      "textPreview": "Project Title",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "resizeShapeToFitText",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Project Title"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Project Title",
+          "resolvedTextStyle": {
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Project Title",
+              "fontSize": 64,
+              "typeface": "Arial",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/729o3uh8",
+      "id": "3",
+      "name": "TextBox 2",
+      "bbox": [
+        585.28,
+        269.02,
+        696.9,
+        365.13
+      ],
+      "geometry": "rect",
+      "text": "Team Name\n\nAlan Blair (zxxxxxxx)\nFatemeh Morgani (zxxxxxxx)\nHao Xue (zxxxxxxx)\nJingying Gao (zxxxxxxx)\nZahra Donyavi (zxxxxxxx)",
+      "textPreview": "Team Name |  | Alan Blair (zxxxxxxx) | Fatemeh Morgani (zxxxxxxx) | Hao Xue (zxxxxxxx) | Jingying Gao (zxxxxxxx) | Zahra Donyavi (zxxxxxxx)",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "resizeShapeToFitText",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 7,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Team Name"
+          },
+          {
+            "index": 2,
+            "text": ""
+          },
+          {
+            "index": 3,
+            "text": "Alan Blair (zxxxxxxx)"
+          },
+          {
+            "index": 4,
+            "text": "Fatemeh Morgani (zxxxxxxx)"
+          },
+          {
+            "index": 5,
+            "text": "Hao Xue (zxxxxxxx)"
+          },
+          {
+            "index": 6,
+            "text": "Jingying Gao (zxxxxxxx)"
+          },
+          {
+            "index": 7,
+            "text": "Zahra Donyavi (zxxxxxxx)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Team Name",
+          "resolvedTextStyle": {
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Team Name",
+              "fontSize": 53.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "Alan Blair (zxxxxxxx)",
+          "runs": [
+            {
+              "index": 1,
+              "text": "Alan Blair (zxxxxxxx)",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 4,
+          "text": "Fatemeh Morgani (zxxxxxxx)",
+          "runs": [
+            {
+              "index": 1,
+              "text": "Fatemeh ",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            },
+            {
+              "index": 2,
+              "text": "Morgani",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            },
+            {
+              "index": 3,
+              "text": " (zxxxxxxx)",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 5,
+          "text": "Hao Xue (zxxxxxxx)",
+          "runs": [
+            {
+              "index": 1,
+              "text": "Hao Xue (zxxxxxxx)",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 6,
+          "text": "Jingying Gao (zxxxxxxx)",
+          "runs": [
+            {
+              "index": 1,
+              "text": "Jingying",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            },
+            {
+              "index": 2,
+              "text": " Gao (zxxxxxxx)",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 7,
+          "text": "Zahra Donyavi (zxxxxxxx)",
+          "runs": [
+            {
+              "index": 1,
+              "text": "Zahra ",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            },
+            {
+              "index": 2,
+              "text": "Donyavi",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            },
+            {
+              "index": 3,
+              "text": " (zxxxxxxx)",
+              "fontSize": 37.33,
+              "typeface": "Arial"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/hcjmdszi",
+      "id": "4",
+      "name": "Picture 5",
+      "bbox": [
+        582.05,
+        0,
+        351.69,
+        239.38
+      ],
+      "contentType": "image/png",
+      "asset": {
+        "assetId": "/ppt/media/image4.png",
+        "contentType": "image/png",
+        "byteLength": 2246055
+      },
+      "fillImage": {
+        "assetId": "/ppt/media/image4.png",
+        "contentType": "image/png",
+        "byteLength": 2246055
+      }
+    },
+    {
+      "order": 4,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/gba547ix",
+      "id": "5",
+      "name": "Picture 6",
+      "bbox": [
+        933.74,
+        0,
+        345.22,
+        239.38
+      ],
+      "contentType": "image/png",
+      "asset": {
+        "assetId": "/ppt/media/image5.png",
+        "contentType": "image/png",
+        "byteLength": 1941354
+      },
+      "fillImage": {
+        "assetId": "/ppt/media/image5.png",
+        "contentType": "image/png",
+        "byteLength": 1941354
+      }
+    }
+  ],
+  "composeRuns": []
+}

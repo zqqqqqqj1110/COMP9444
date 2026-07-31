@@ -1,0 +1,5 @@
+Slide 6: body placeholder is resized to the left half so a bounded native architecture diagram can occupy the right half.
+Slide 7: body placeholder is resized to the left half so a bounded native checkpoint-selection flow can occupy the right half.
+Slide 9: body placeholder is resized to the left side so a bounded native outcome chart can occupy the right side.
+Slide 12: the inherited questions image and attribution are retained; the empty title placeholder is filled.
+All other changes rewrite or replace inherited template elements.
