@@ -1,0 +1,37 @@
+{
+  "route": {
+    "name": "saved_successful_same_scene_new_route",
+    "description": "Successful unseen route at a different location in the AirSimNH map",
+    "start": {
+      "x": 11.178834915161133,
+      "y": 45.49273681640625,
+      "z": -3.0
+    },
+    "target": {
+      "x": 45.0,
+      "y": 48.0,
+      "z": -3.0
+    },
+    "straight_line_distance_m": 33.9139731728344,
+    "historical_preview_episodes": 2,
+    "historical_preview_successes": 2,
+    "max_steps": 150,
+    "goal_radius_m": 2.0
+  },
+  "model": {
+    "route": "saved_successful_same_scene_new_route",
+    "model": "ppo_scratch",
+    "policy_mode": "deterministic",
+    "episodes": 50,
+    "success_rate": 1.0,
+    "collision_rate": 0.0,
+    "altitude_violation_rate": 0.0,
+    "unsafe_rate": 0.0,
+    "timeout_rate": 0.0,
+    "average_reward": 154.2627104602313,
+    "average_steps": 47.04,
+    "average_final_distance": 1.6863847804886725,
+    "average_path_length_m": 34.982223902620625,
+    "average_min_depth_m": 0.19479248046875
+  }
+}

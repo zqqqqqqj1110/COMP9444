@@ -1,0 +1,22 @@
+{
+  "algorithm": "dqn",
+  "model": "C:\\Users\\MEOW Computer\\Desktop\\COMP9444\\pretrained\\airsimnh\\dqn_scratch_seed7.pt",
+  "seed": 20007,
+  "requested_policy_mode": "deterministic",
+  "modes": [
+    {
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.0,
+      "collision_rate": 0.98,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.98,
+      "timeout_rate": 0.02,
+      "average_reward": -71.00994579771026,
+      "average_steps": 25.08,
+      "average_final_distance": 17.501474760504074,
+      "average_path_length_m": 16.664465783712636,
+      "average_min_depth_m": 0.14380615234375
+    }
+  ]
+}

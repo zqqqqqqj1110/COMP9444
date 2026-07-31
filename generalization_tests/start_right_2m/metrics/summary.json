@@ -1,0 +1,78 @@
+{
+  "route": {
+    "name": "original_route_start_right_2m",
+    "description": "Original AirSimNH route with only the start shifted 2 m right (+y)",
+    "start": {
+      "x": 85.413,
+      "y": -13.334,
+      "z": -3.0
+    },
+    "target": {
+      "x": 117.756,
+      "y": -19.034,
+      "z": -3.0
+    },
+    "reference_start": {
+      "x": 85.413,
+      "y": -15.334,
+      "z": -3.0
+    },
+    "offset": {
+      "x": 0.0,
+      "y": 2.0,
+      "z": 0.0
+    },
+    "max_steps": 150,
+    "goal_radius_m": 2.0
+  },
+  "models": [
+    {
+      "route": "original_route_start_right_2m",
+      "model": "dqn_scratch",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.0,
+      "collision_rate": 0.98,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.98,
+      "timeout_rate": 0.02,
+      "average_reward": -71.00994579771026,
+      "average_steps": 25.08,
+      "average_final_distance": 17.501474760504074,
+      "average_path_length_m": 16.664465783712636,
+      "average_min_depth_m": 0.14380615234375
+    },
+    {
+      "route": "original_route_start_right_2m",
+      "model": "ppo_scratch",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 1.0,
+      "collision_rate": 0.0,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.0,
+      "timeout_rate": 0.0,
+      "average_reward": 142.91599552761883,
+      "average_steps": 48.08,
+      "average_final_distance": 1.7580357496042849,
+      "average_path_length_m": 35.950646143779366,
+      "average_min_depth_m": 0.285341796875
+    },
+    {
+      "route": "original_route_start_right_2m",
+      "model": "ppo_curriculum",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.42,
+      "collision_rate": 0.6,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.6,
+      "timeout_rate": 0.0,
+      "average_reward": 28.392841533054728,
+      "average_steps": 49.24,
+      "average_final_distance": 1.998127391641751,
+      "average_path_length_m": 35.07750920488594,
+      "average_min_depth_m": 0.2854833984375
+    }
+  ]
+}

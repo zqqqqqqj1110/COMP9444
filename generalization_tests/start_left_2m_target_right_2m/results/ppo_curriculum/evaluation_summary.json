@@ -1,0 +1,22 @@
+{
+  "algorithm": "ppo",
+  "model": "C:\\Users\\MEOW Computer\\Desktop\\COMP9444\\pretrained\\airsimnh\\ppo_curriculum_seed7.pt",
+  "seed": 20007,
+  "requested_policy_mode": "deterministic",
+  "modes": [
+    {
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.36,
+      "collision_rate": 0.64,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.64,
+      "timeout_rate": 0.0,
+      "average_reward": 25.347718553117385,
+      "average_steps": 53.56,
+      "average_final_distance": 2.1407374557748575,
+      "average_path_length_m": 36.83066572934462,
+      "average_min_depth_m": 0.18604248046875
+    }
+  ]
+}

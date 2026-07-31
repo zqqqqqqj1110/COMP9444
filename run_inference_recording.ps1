@@ -1,6 +1,10 @@
 # Edit only this configuration section before recording a model.
 $Scenario = "AirSimNH"
-$SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
+# Set AIRSIMNH_EXE once on each machine to the full AirSimNH.exe path.
+$SceneExe = $env:AIRSIMNH_EXE
+if ([string]::IsNullOrWhiteSpace($SceneExe)) {
+    $SceneExe = [Environment]::GetEnvironmentVariable("AIRSIMNH_EXE", "User")
+}
 $Algorithm = "ppo"
 $Model = Join-Path $PSScriptRoot "pretrained\airsimnh\ppo_scratch_seed7.pt"
 $PolicyMode = "deterministic"
@@ -21,7 +25,7 @@ $VideoWidth = 960
 $VideoHeight = 540
 $VideoFps = 3
 
-$PythonExe = "C:\Users\User\miniconda3\envs\airsim-rl\python.exe"
+$PythonExe = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 $AutoStartScene = $true
 $CloseSceneAfterRun = $true
 $AirSimHost = "127.0.0.1"

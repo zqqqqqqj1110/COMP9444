@@ -1,6 +1,10 @@
 # Edit this section on each machine before starting a comparison run.
 $Scenario = "AirSimNH"
-$SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
+# Set AIRSIMNH_EXE once on each machine to the full AirSimNH.exe path.
+$SceneExe = $env:AIRSIMNH_EXE
+if ([string]::IsNullOrWhiteSpace($SceneExe)) {
+    $SceneExe = [Environment]::GetEnvironmentVariable("AIRSIMNH_EXE", "User")
+}
 $Seed = 7
 $RunTag = "stable_v3_scratch"
 
@@ -65,7 +69,7 @@ $MaximumGateUnsafeRate = 0.20
 $RunSmokeTest = $true
 $SmokeTestSteps = 3
 
-$PythonExe = "C:\Users\User\miniconda3\envs\airsim-rl\python.exe"
+$PythonExe = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 $AutoStartScene = $true
 $CloseSceneAfterRun = $true
 $AirSimHost = "127.0.0.1"

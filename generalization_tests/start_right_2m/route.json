@@ -1,0 +1,10 @@
+{
+  "name": "original_route_start_right_2m",
+  "description": "Original AirSimNH route with only the start shifted 2 m right (+y)",
+  "start": {"x": 85.413, "y": -13.334, "z": -3.0},
+  "target": {"x": 117.756, "y": -19.034, "z": -3.0},
+  "reference_start": {"x": 85.413, "y": -15.334, "z": -3.0},
+  "offset": {"x": 0.0, "y": 2.0, "z": 0.0},
+  "max_steps": 150,
+  "goal_radius_m": 2.0
+}

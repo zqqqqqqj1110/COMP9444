@@ -1,6 +1,10 @@
 # Edit only this configuration section for a new PPO experiment.
 $Scenario = "AirSimNH"
-$SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
+# Set AIRSIMNH_EXE once on each machine to the full AirSimNH.exe path.
+$SceneExe = $env:AIRSIMNH_EXE
+if ([string]::IsNullOrWhiteSpace($SceneExe)) {
+    $SceneExe = [Environment]::GetEnvironmentVariable("AIRSIMNH_EXE", "User")
+}
 $RunName = "curriculum_stage03_33m_30k_seed7_stable_v3_stage3_pilot"
 $ResumeModel = "D:\AirSim\rl_drone_navigation\experiments\airsimnh\ppo\curriculum_stage02_23m_10k_seed7_stable_v3_stage2_pilot\models\ppo_best_deterministic.pt"
 $ResumeOptimizer = $false
@@ -37,7 +41,7 @@ $EvaluationEpisodes = 50
 $RunSmokeTest = $true
 $SmokeTestSteps = 3
 
-$PythonExe = "C:\Users\User\miniconda3\envs\airsim-rl\python.exe"
+$PythonExe = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 $AutoStartScene = $true
 $CloseSceneAfterRun = $true
 $AirSimHost = "127.0.0.1"

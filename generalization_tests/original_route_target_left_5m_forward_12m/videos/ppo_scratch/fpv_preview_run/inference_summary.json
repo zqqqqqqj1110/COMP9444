@@ -1,0 +1,22 @@
+{
+  "created_at": "2026-07-29T14:36:13.003812+00:00",
+  "algorithm": "ppo",
+  "policy_mode": "deterministic",
+  "model": "C:\\Users\\MEOW Computer\\Desktop\\COMP9444\\pretrained\\airsimnh\\ppo_scratch_seed7.pt",
+  "seed": 20007,
+  "start": [
+    85.413,
+    -15.334,
+    -3.0
+  ],
+  "target": [
+    129.756,
+    -24.034,
+    -3.0
+  ],
+  "attempted_episodes": 1,
+  "successful_episodes": 0,
+  "success_rate": 0.0,
+  "step_log": "C:\\Users\\MEOW Computer\\Desktop\\COMP9444\\generalization_tests\\original_route_target_left_5m_forward_12m\\videos\\ppo_scratch\\fpv_preview_run\\inference_steps.csv",
+  "episode_log": "C:\\Users\\MEOW Computer\\Desktop\\COMP9444\\generalization_tests\\original_route_target_left_5m_forward_12m\\videos\\ppo_scratch\\fpv_preview_run\\inference_episodes.csv"
+}

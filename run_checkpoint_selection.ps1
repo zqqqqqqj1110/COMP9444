@@ -1,6 +1,10 @@
 # Select one validated model from each completed Seed 7 experiment.
 $Scenario = "AirSimNH"
-$SceneExe = "D:\AirSim\AirSimNH\WindowsNoEditor\AirSimNH.exe"
+# Set AIRSIMNH_EXE once on each machine to the full AirSimNH.exe path.
+$SceneExe = $env:AIRSIMNH_EXE
+if ([string]::IsNullOrWhiteSpace($SceneExe)) {
+    $SceneExe = [Environment]::GetEnvironmentVariable("AIRSIMNH_EXE", "User")
+}
 $Seed = 7
 
 $RunDqnScratch = $true
@@ -26,7 +30,7 @@ $TargetY = -19.034
 $TargetZ = -3.0
 $MaxSteps = 150
 
-$PythonExe = "C:\Users\User\miniconda3\envs\airsim-rl\python.exe"
+$PythonExe = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 $AutoStartScene = $true
 $CloseSceneAfterRun = $true
 $AirSimHost = "127.0.0.1"

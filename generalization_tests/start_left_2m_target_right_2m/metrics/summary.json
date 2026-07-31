@@ -1,0 +1,88 @@
+{
+  "route": {
+    "name": "original_route_start_left_2m_target_right_2m",
+    "description": "Original AirSimNH route with start shifted 2 m left (-y) and target shifted 2 m right (+y)",
+    "start": {
+      "x": 85.413,
+      "y": -17.334,
+      "z": -3.0
+    },
+    "target": {
+      "x": 117.756,
+      "y": -17.034,
+      "z": -3.0
+    },
+    "reference_start": {
+      "x": 85.413,
+      "y": -15.334,
+      "z": -3.0
+    },
+    "reference_target": {
+      "x": 117.756,
+      "y": -19.034,
+      "z": -3.0
+    },
+    "start_offset": {
+      "x": 0.0,
+      "y": -2.0,
+      "z": 0.0
+    },
+    "target_offset": {
+      "x": 0.0,
+      "y": 2.0,
+      "z": 0.0
+    },
+    "max_steps": 150,
+    "goal_radius_m": 2.0
+  },
+  "models": [
+    {
+      "route": "original_route_start_left_2m_target_right_2m",
+      "model": "dqn_scratch",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.0,
+      "collision_rate": 0.32,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.32,
+      "timeout_rate": 0.68,
+      "average_reward": -15.011910525567647,
+      "average_steps": 121.82,
+      "average_final_distance": 8.523759838894076,
+      "average_path_length_m": 46.11062066884389,
+      "average_min_depth_m": 0.109556884765625
+    },
+    {
+      "route": "original_route_start_left_2m_target_right_2m",
+      "model": "ppo_scratch",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 1.0,
+      "collision_rate": 0.0,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.0,
+      "timeout_rate": 0.0,
+      "average_reward": 156.37105402652642,
+      "average_steps": 50.7,
+      "average_final_distance": 1.7644512420632947,
+      "average_path_length_m": 35.538626114057635,
+      "average_min_depth_m": 0.18634765625
+    },
+    {
+      "route": "original_route_start_left_2m_target_right_2m",
+      "model": "ppo_curriculum",
+      "policy_mode": "deterministic",
+      "episodes": 50,
+      "success_rate": 0.36,
+      "collision_rate": 0.64,
+      "altitude_violation_rate": 0.0,
+      "unsafe_rate": 0.64,
+      "timeout_rate": 0.0,
+      "average_reward": 25.347718553117385,
+      "average_steps": 53.56,
+      "average_final_distance": 2.1407374557748575,
+      "average_path_length_m": 36.83066572934462,
+      "average_min_depth_m": 0.18604248046875
+    }
+  ]
+}

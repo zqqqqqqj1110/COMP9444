@@ -57,6 +57,11 @@ def parse_args():
     parser.add_argument("--results-dir", type=Path, default=None, help="Optional override for evaluation files.")
     parser.add_argument("--models-dir", type=Path, default=None, help="Optional override for model lookup.")
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument(
+        "--show-progress",
+        action="store_true",
+        help="Print one concise progress line after every completed episode.",
+    )
     return parser.parse_args()
 
 
@@ -144,6 +149,7 @@ def evaluate_policy(
     max_steps: int,
     seed: int,
     collect_trajectory: bool = True,
+    show_progress: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     if policy_mode not in POLICY_MODES:
         raise ValueError(f"Unsupported policy mode: {policy_mode}")
@@ -218,8 +224,7 @@ def evaluate_policy(
         position = info.get("position", (np.nan, np.nan, np.nan))
         dominant_action = int(np.argmax(action_counts))
         observed_steps = max(int(action_counts.sum()), 1)
-        episode_rows.append(
-            {
+        episode_row = {
                 "policy_mode": policy_mode,
                 "episode": episode,
                 "reward": total_reward,
@@ -241,7 +246,25 @@ def evaluate_policy(
                 ),
                 **action_count_values(action_counts),
             }
-        )
+        episode_rows.append(episode_row)
+        if show_progress:
+            if episode_row["success"]:
+                status = "success"
+            elif episode_row["collision"]:
+                status = "collision"
+            elif episode_row["out_of_altitude"]:
+                status = "altitude"
+            elif episode_row["timeout"]:
+                status = "timeout"
+            else:
+                status = "stopped"
+            print(
+                f"Episode {episode}/{episodes} | {status} | "
+                f"steps={int(episode_row['steps'])} | "
+                f"reward={float(episode_row['reward']):.2f} | "
+                f"final_distance={float(episode_row['final_distance']):.2f} m",
+                flush=True,
+            )
 
     return episode_rows, trajectory_rows
 
@@ -368,6 +391,7 @@ def main():
                 max_steps=args.max_steps,
                 seed=args.seed,
                 collect_trajectory=True,
+                show_progress=args.show_progress,
             )
             log_path, trajectory_path = write_mode_outputs(
                 paths.results_dir,
